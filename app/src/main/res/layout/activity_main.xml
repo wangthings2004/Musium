@@ -21,21 +21,21 @@
             app:layout_constraintTop_toTopOf="parent"
             app:navGraph="@navigation/nav_graph" />
 
-<!--        <com.google.android.material.bottomnavigation.BottomNavigationView-->
-<!--            android:id="@+id/bottomNavigationView"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="60dp"-->
-<!--            android:background="@drawable/blur_bg"-->
-<!--            app:itemIconSize="30dp"-->
-<!--            app:itemIconTint="@color/bottom_view_color"-->
-<!--            app:itemPaddingBottom="6dp"-->
-<!--            app:itemPaddingTop="12dp"-->
-<!--            app:itemTextColor="@color/bottom_view_color"-->
-<!--            app:labelVisibilityMode="labeled"-->
-<!--            app:itemActiveIndicatorStyle="@drawable/blur_bg"-->
-<!--            app:menu="@menu/bottom_menu"-->
-<!--            style="@style/BottomNavigationViewStyle"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"/>-->
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNavigationView"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@drawable/blur_bg"
+            app:itemIconSize="30dp"
+            app:itemIconTint="@color/bottom_view_color"
+            app:itemPaddingBottom="6dp"
+            app:itemPaddingTop="12dp"
+            app:itemTextColor="@color/bottom_view_color"
+            app:labelVisibilityMode="labeled"
+
+
+            style="@style/BottomNavigationViewStyle"
+            app:layout_constraintBottom_toBottomOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

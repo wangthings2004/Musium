@@ -7,14 +7,14 @@
         android:enabled="true"
         android:icon="@drawable/home"
         app:showAsAction="ifRoom"/>
-    <item android:id="@+id/searchFragment"
+    <item android:id="@+id/exploreFragment"
         android:title=''
         app:showAsAction="ifRoom"
         android:enabled="true"
-        android:icon="@drawable/frame"/>
+        android:icon="@drawable/search"/>
     <item android:id="@+id/libaryFragment"
         android:title=""
         app:showAsAction="ifRoom"
         android:enabled="true"
-        android:icon="@+id/library_music"/>
+        android:icon="@drawable/folder_ui"/>
 </menu>
