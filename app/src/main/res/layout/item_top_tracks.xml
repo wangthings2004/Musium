@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="150dp"
+    android:layout_height="150dp"
+    android:layout_margin="8dp"
+    android:background="@mipmap/ic_launcher">
+    <View
+        android:id="@+id/bottomView"
+        android:layout_width="match_parent"
+        android:layout_height="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:elevation="1dp"
+        android:background="#711E1E">
+
+    </View>
+    <TextView
+        android:id="@+id/tvTrackTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="Espresso"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:layout_margin="10dp"/>
+    <ImageView
+        android:id="@+id/ivArtistName"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        app:layout_constraintStart_toStartOf="@id/tvTrackTitle"
+        app:layout_constraintBottom_toTopOf="@id/bottomView"
+        android:src="@drawable/artist"
+
+        android:layout_marginBottom="10dp"
+
+
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/ivArtistName"
+        android:text="Sabrina Carpenter"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:layout_marginStart="4dp"
+        app:layout_constraintBottom_toBottomOf="@id/ivArtistName"
+        app:layout_constraintTop_toTopOf="@id/ivArtistName"/>
+    <ImageView
+        android:id="@+id/ivEar"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toTopOf="@id/ivArtistName"
+        app:layout_constraintStart_toStartOf="@id/ivArtistName"
+        android:layout_width="13dp"
+        android:layout_height="13dp"
+        android:src="@drawable/ear"
+        app:tint="@color/white" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/ivEar"
+        android:text="972846"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:layout_marginStart="4dp"
+        app:layout_constraintTop_toTopOf="@id/ivEar"
+        app:layout_constraintBottom_toBottomOf="@id/ivEar"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

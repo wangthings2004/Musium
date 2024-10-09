@@ -35,7 +35,17 @@
             android:id="@+id/homeFragment"
             android:name="com.jcxdc.musium.HomeFragment"
             android:label="fragment_home"
-            tools:layout="@layout/fragment_home" />
+            tools:layout="@layout/fragment_home" >
+            <action
+                android:id="@+id/action_homeFragment_to_topArtistFragment"
+                app:destination="@id/topArtistFragment" />
+            <action
+                android:id="@+id/action_homeFragment_to_topTracksFragment"
+                app:destination="@id/topTracksFragment" />
+            <action
+                android:id="@+id/action_homeFragment_to_libaryFragment"
+                app:destination="@id/libaryFragment" />
+        </fragment>
 
     <fragment
         android:id="@+id/exploreFragment"
@@ -47,4 +57,20 @@
         android:name="com.jcxdc.musium.LibaryFragment"
         android:label="fragment_libary"
         tools:layout="@layout/fragment_libary" />
+    <fragment
+        android:id="@+id/topAlbumFragment"
+        android:name="com.jcxdc.musium.TopAlbumFragment"
+        android:label="fragment_top_album"
+        tools:layout="@layout/fragment_top_album" />
+    <fragment
+        android:id="@+id/topArtistFragment"
+        android:name="com.jcxdc.musium.TopArtistFragment"
+        android:label="fragment_top_artist"
+        tools:layout="@layout/fragment_top_artist" />
+    <fragment
+        android:id="@+id/topTracksFragment"
+        android:name="com.jcxdc.musium.TopTracksFragment"
+        android:label="fragment_top_tracks"
+        tools:layout="@layout/fragment_top_tracks" />
+
 </navigation>
