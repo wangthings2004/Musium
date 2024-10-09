@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.fragment.findNavController
 import com.jcxdc.musium.databinding.FragmentLoginBinding
 
 class LoginFragment : Fragment() {
@@ -19,7 +20,9 @@ class LoginFragment : Fragment() {
         // Sử dụng DataBindingUtil để inflate layout
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false)
 
-        // Trả về view từ binding
+        binding.btnLogin.setOnClickListener{
+            findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+        }
         return binding.root
     }
 }
