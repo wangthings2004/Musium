@@ -7,12 +7,12 @@
         android:enabled="true"
         android:icon="@drawable/home"
         app:showAsAction="ifRoom"/>
-    <item android:id="@+id/exploreFragment"
+    <item android:id="@+id/libaryFragment"
         android:title=''
         app:showAsAction="ifRoom"
         android:enabled="true"
         android:icon="@drawable/library_music"/>
-    <item android:id="@+id/libaryFragment"
+    <item android:id="@+id/playlistFragment"
         android:title=""
         app:showAsAction="ifRoom"
         android:enabled="true"

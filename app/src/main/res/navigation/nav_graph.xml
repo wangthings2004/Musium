@@ -42,9 +42,7 @@
             <action
                 android:id="@+id/action_homeFragment_to_topTracksFragment"
                 app:destination="@id/topTracksFragment" />
-            <action
-                android:id="@+id/action_homeFragment_to_libaryFragment"
-                app:destination="@id/libaryFragment" />
+
         </fragment>
 
     <fragment
@@ -72,5 +70,10 @@
         android:name="com.jcxdc.musium.TopTracksFragment"
         android:label="fragment_top_tracks"
         tools:layout="@layout/fragment_top_tracks" />
+    <fragment
+        android:id="@+id/playlistFragment"
+        android:name="com.jcxdc.musium.PlaylistFragment"
+        android:label="fragment_playlist"
+        tools:layout="@layout/fragment_playlist" />
 
 </navigation>
