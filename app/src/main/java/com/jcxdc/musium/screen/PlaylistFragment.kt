@@ -1,16 +1,16 @@
-package com.jcxdc.musium
+package com.jcxdc.musium.screen
 
 import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import com.jcxdc.musium.R
 import com.jcxdc.musium.databinding.FragmentPlaylistBinding
 
 class PlaylistFragment : Fragment() {

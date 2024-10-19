@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_view"
-    app:startDestination="@id/playerFragment">
+    app:startDestination="@id/registerFragment">
     <fragment
         android:id="@+id/splashFragment"
-        android:name="com.jcxdc.musium.SplashFragment"
+        android:name="com.jcxdc.musium.screen.SplashFragment"
         android:label="fragment_splash"
         tools:layout="@layout/fragment_splash" >
         <action
@@ -18,7 +18,7 @@
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.jcxdc.musium.LoginFragment"
+        android:name="com.jcxdc.musium.screen.LoginFragment"
         android:label="fragment_sign_up"
         tools:layout="@layout/fragment_login" >
         <action
@@ -27,13 +27,17 @@
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
-        android:name="com.jcxdc.musium.RegisterFragment"
+        android:name="com.jcxdc.musium.screen.RegisterFragment"
         android:label="fragment_register"
-        tools:layout="@layout/fragment_register" />
+        tools:layout="@layout/fragment_register" >
+        <action
+            android:id="@+id/action_registerFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
 
         <fragment
             android:id="@+id/homeFragment"
-            android:name="com.jcxdc.musium.HomeFragment"
+            android:name="com.jcxdc.musium.screen.HomeFragment"
             android:label="fragment_home"
             tools:layout="@layout/fragment_home" >
             <action
@@ -47,37 +51,37 @@
 
     <fragment
         android:id="@+id/exploreFragment"
-        android:name="com.jcxdc.musium.exploreFragment"
+        android:name="com.jcxdc.musium.screen.exploreFragment"
         android:label="fragment_explore"
         tools:layout="@layout/fragment_explore" />
     <fragment
         android:id="@+id/libaryFragment"
-        android:name="com.jcxdc.musium.LibaryFragment"
+        android:name="com.jcxdc.musium.screen.LibaryFragment"
         android:label="fragment_libary"
         tools:layout="@layout/fragment_libary" />
     <fragment
         android:id="@+id/topAlbumFragment"
-        android:name="com.jcxdc.musium.TopAlbumFragment"
+        android:name="com.jcxdc.musium.screen.TopAlbumFragment"
         android:label="fragment_top_album"
         tools:layout="@layout/fragment_top_album" />
     <fragment
         android:id="@+id/topArtistFragment"
-        android:name="com.jcxdc.musium.TopArtistFragment"
+        android:name="com.jcxdc.musium.screen.TopArtistFragment"
         android:label="fragment_top_artist"
         tools:layout="@layout/fragment_top_artist" />
     <fragment
         android:id="@+id/topTracksFragment"
-        android:name="com.jcxdc.musium.TopTracksFragment"
+        android:name="com.jcxdc.musium.screen.TopTracksFragment"
         android:label="fragment_top_tracks"
         tools:layout="@layout/fragment_top_tracks" />
     <fragment
         android:id="@+id/playlistFragment"
-        android:name="com.jcxdc.musium.PlaylistFragment"
+        android:name="com.jcxdc.musium.screen.PlaylistFragment"
         android:label="fragment_playlist"
         tools:layout="@layout/fragment_playlist" />
     <fragment
         android:id="@+id/playerFragment"
-        android:name="com.jcxdc.musium.PlayerFragment"
+        android:name="com.jcxdc.musium.screen.PlayerFragment"
         android:label="fragment_player"
         tools:layout="@layout/fragment_player" />
 

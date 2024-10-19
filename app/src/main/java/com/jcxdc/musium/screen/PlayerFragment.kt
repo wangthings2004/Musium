@@ -1,12 +1,13 @@
-package com.jcxdc.musium
+package com.jcxdc.musium.screen
 
 import android.media.MediaPlayer
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import com.jcxdc.musium.R
 import com.jcxdc.musium.databinding.FragmentPlayerBinding
 
 class PlayerFragment : Fragment() {

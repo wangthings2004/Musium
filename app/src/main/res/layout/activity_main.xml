@@ -36,6 +36,7 @@
             style="@style/BottomNavigationViewStyle"
             app:layout_constraintBottom_toBottomOf="parent"/>
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:visibility="invisible"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:orientation="horizontal"
