@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("kotlin-kapt")
+    id("dagger.hilt.android.plugin")
+    id("androidx.navigation.safeargs")
 }
 
 android {
@@ -40,7 +42,33 @@ android {
 }
 
 dependencies {
+    var lifecycle_version = "2.8.6"
     var nav_version = "2.7.7"
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version")
+
+    kapt ("androidx.hilt:hilt-compiler:2.8.6")
+    // Hilt
+    implementation ("com.google.dagger:hilt-android:2.52")
+    kapt ("com.google.dagger:hilt-compiler:2.52")
+
+// Retrofit
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation ("com.squareup.okhttp3:logging-interceptor:4.9.3")
+
+// Client
+    implementation ("com.squareup.okhttp3:okhttp:5.0.0-alpha.1")
+
+// OkHttp Interceptor
+    implementation ("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.1")
+
+// Gson
+    implementation ("com.google.code.gson:gson:2.10.1")
+
+// Image loading
+    implementation ("io.coil-kt:coil:1.4.0")
+
+
 
     // Koin
     implementation("io.insert-koin:koin-core:3.2.2")
@@ -62,6 +90,9 @@ dependencies {
     // Material and UI components
     implementation("com.google.android.material:material:1.11.0")
     implementation("de.hdodenhof:circleimageview:3.1.0")
+
+    implementation ("com.squareup.moshi:moshi:1.13.0")
+    implementation ("com.squareup.moshi:moshi-kotlin:1.13.0")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
