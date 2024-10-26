@@ -44,9 +44,7 @@ android {
 dependencies {
     var lifecycle_version = "2.8.6"
     var nav_version = "2.7.7"
-    implementation ("androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version")
 
-    kapt ("androidx.hilt:hilt-compiler:2.8.6")
     // Hilt
     implementation ("com.google.dagger:hilt-android:2.52")
     kapt ("com.google.dagger:hilt-compiler:2.52")

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_view"
-    app:startDestination="@id/registerFragment">
+    app:startDestination="@id/loginFragment">
     <fragment
         android:id="@+id/splashFragment"
         android:name="com.jcxdc.musium.screen.SplashFragment"
@@ -46,6 +46,9 @@
             <action
                 android:id="@+id/action_homeFragment_to_topTracksFragment"
                 app:destination="@id/topTracksFragment" />
+            <action
+                android:id="@+id/action_homeFragment_to_playerFragment"
+                app:destination="@id/playerFragment" />
 
         </fragment>
 

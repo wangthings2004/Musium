@@ -2,6 +2,7 @@ package com.jcxdc.musium.repository
 
 import com.jcxdc.musium.api.APIServices
 import com.jcxdc.musium.db.RemoteAudio
+import com.jcxdc.musium.db.RemoteAudioItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -14,8 +15,12 @@ import javax.inject.Inject
 class APIRepository @Inject constructor(
     private var apiServices: APIServices
 ) {
-    fun getRemoteAudioRepo(): Flow<RemoteAudio> = flow {
-        val response = apiServices.getRemoteAudio()
-        emit(response)
-    }.flowOn(Dispatchers.IO)
+    suspend fun getRemoteAudios(): List<RemoteAudioItem>? {
+        val response = apiServices.getRemoteAudios()
+        if (response.isSuccessful) {
+            return response.body()
+        }
+        return null
+    }
 }
+

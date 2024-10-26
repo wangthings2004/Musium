@@ -1,18 +1,20 @@
 package com.jcxdc.musium.screen
 
-import RemoteAudioViewModel
+import com.jcxdc.musium.viewmodel.RemoteAudioViewModel
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.jcxdc.musium.R
 
 import com.jcxdc.musium.adapter.RemoteAudioAdapter
 import com.jcxdc.musium.databinding.FragmentHomeBinding
-import com.jcxdc.musium.utils.RemoteAudioState
+import com.jcxdc.musium.utils.Constants.API_KEY
 
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -41,27 +43,25 @@ class HomeFragment : Fragment() {
 
         setupRecyclerView()
 
-        remoteAudioViewModel.responseRemoteAudio.observe(viewLifecycleOwner, Observer { state ->
-            when (state) {
-                is RemoteAudioState.Loading -> {
-
-                }
-                is RemoteAudioState.Success -> {
-
-                    remoteAudioAdapter.submitList(state.data)
-                }
-                is RemoteAudioState.Error -> {
-
-                }
+        remoteAudioViewModel.remoteAudios.observe(viewLifecycleOwner) { audios ->
+            audios?.let {
+                remoteAudioAdapter.submitList(it)
 
             }
-        })
+        }
+
     }
 
     private fun setupRecyclerView() {
         binding.rvTopTracks.apply {
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
             adapter = remoteAudioAdapter
+            remoteAudioAdapter.onItemClick = {
+                findNavController().navigate(
+                    R.id.action_homeFragment_to_playerFragment,
+                    bundleOf(API_KEY to it)
+                )
+            }
         }
     }
 }
