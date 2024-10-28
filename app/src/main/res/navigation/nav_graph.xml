@@ -86,6 +86,10 @@
         android:id="@+id/playerFragment"
         android:name="com.jcxdc.musium.screen.PlayerFragment"
         android:label="fragment_player"
-        tools:layout="@layout/fragment_player" />
+        tools:layout="@layout/fragment_player" >
+        <argument
+            android:name="audioItem"
+            app:argType="com.jcxdc.musium.db.RemoteAudioItem" />
+    </fragment>
 
 </navigation>

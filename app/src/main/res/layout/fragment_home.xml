@@ -81,7 +81,21 @@
                 android:textSize="18sp"
                 android:textColor="#00C2CB"
                 android:textStyle="bold" />
-
+            <ProgressBar
+                android:id="@+id/pbLoading"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:indeterminateTint="@android:color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:visibility="invisible"
+                android:id="@+id/ctlMain"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/ivCrown">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -89,7 +103,7 @@
                 android:textStyle="bold"
                 android:textSize="18sp"
                 android:id="@+id/tvTopAlbum"
-                app:layout_constraintTop_toBottomOf="@id/ivCrown"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginTop="14dp"
                 android:text="Top Album" />
@@ -166,6 +180,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginTop="10dp" />
 
+        </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

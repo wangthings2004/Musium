@@ -121,15 +121,18 @@
                 android:layout_height="20dp"
 
                 android:src="@drawable/mback"/>
+
             <ImageView
-                android:layout_weight="0.75"
-                android:layout_gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="56dp"
                 android:id="@+id/ivPlay"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_gravity="center"
+                android:layout_weight="0.75"
                 android:background="@drawable/play_round_gradient"
-                android:padding="10dp"
+                android:padding="12dp"
+                android:paddingEnd="4dp"
                 android:src="@drawable/play" />
+
             <ImageView
                 android:layout_weight="1"
                 android:layout_gravity="center_vertical"

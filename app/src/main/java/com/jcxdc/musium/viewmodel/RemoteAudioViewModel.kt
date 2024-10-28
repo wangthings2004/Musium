@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.jcxdc.musium.db.RemoteAudio
+import com.jcxdc.musium.db.RemoteAudioItem
 import com.jcxdc.musium.repository.APIRepository
 import com.jcxdc.musium.utils.CommonFunction.isNetworkAvailable
 import com.jcxdc.musium.utils.RemoteAudioState
@@ -20,13 +21,24 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RemoteAudioViewModel @Inject constructor(
-    private val repository: APIRepository,
-
+    private val repository: APIRepository
 ) : ViewModel() {
-    val remoteAudios = liveData(Dispatchers.IO) {
-        val data = repository.getRemoteAudios()
-        emit(data)
+
+    private val _remoteAudioState = MutableLiveData<RemoteAudioState<List<RemoteAudioItem>>>()
+    val remoteAudioState: LiveData<RemoteAudioState<List<RemoteAudioItem>>> = _remoteAudioState
+
+    fun fetchRemoteAudios() {
+        viewModelScope.launch {
+            _remoteAudioState.postValue(RemoteAudioState.Loading)
+            try {
+                val data = repository.getRemoteAudios()?: emptyList()
+                _remoteAudioState.postValue(RemoteAudioState.Success(data))
+            } catch (e: Exception) {
+                _remoteAudioState.postValue(RemoteAudioState.Error("An error occurred. Please try again."))
+            }
+        }
     }
+}
 //    private val _responseRemoteAudio: MutableLiveData<RemoteAudioState<RemoteAudio>> = MutableLiveData(RemoteAudioState.Loading)
 //    val responseRemoteAudio: LiveData<RemoteAudioState<RemoteAudio>> = _responseRemoteAudio
 //
@@ -50,4 +62,4 @@ class RemoteAudioViewModel @Inject constructor(
 //            }
 //        }
 //    }
-}
+
