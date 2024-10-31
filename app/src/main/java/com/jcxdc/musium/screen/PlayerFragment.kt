@@ -10,10 +10,12 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.jcxdc.musium.R
 import com.jcxdc.musium.databinding.FragmentPlayerBinding
 import com.jcxdc.musium.db.RemoteAudioItem
 import com.jcxdc.musium.utils.Constants.API_KEY
+import com.jcxdc.musium.viewmodel.RemoteAudioViewModel
 
 class PlayerFragment : Fragment() {
 
@@ -22,46 +24,67 @@ class PlayerFragment : Fragment() {
     private val handler = Handler(Looper.getMainLooper())
     private var isTracking = false
 
+    private val remoteAudioViewModel: RemoteAudioViewModel by viewModels({ requireActivity() })
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate layout using DataBindingUtil
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_player, container, false)
-
-        // Retrieve RemoteAudioItem from arguments
-        val audioItem = arguments?.getParcelable<RemoteAudioItem>(API_KEY)
-        setupMediaPlayer(audioItem)
-
-        // Play/Pause button logic
-        binding.ivPlay.setOnClickListener {
-            if (mediaPlayer?.isPlaying == true) {
-                mediaPlayer?.pause()
-                binding.ivPlay.setImageResource(R.drawable.play) // Change icon to play
-            } else {
-                mediaPlayer?.start()
-                binding.ivPlay.setImageResource(R.drawable.pause) // Change icon to pause
-            }
-        }
-
-        // Back button
-        binding.ivBack.setOnClickListener {
-            requireActivity().onBackPressed()
-        }
+        setupPlayerControls()
+        observeCurrentAudio()
 
         return binding.root
     }
 
+    private fun observeCurrentAudio() {
+        remoteAudioViewModel.currentAudioIndex.observe(viewLifecycleOwner) { index ->
+            val audioItem = remoteAudioViewModel.getCurrentAudioItem()
+            setupMediaPlayer(audioItem)
+        }
+    }
+
+    private fun setupPlayerControls() {
+        binding.ivPlay.setOnClickListener {
+            togglePlayPause()
+        }
+
+        binding.ivNext.setOnClickListener {
+            remoteAudioViewModel.nextAudio()
+        }
+
+        binding.ivPrevious.setOnClickListener {
+            remoteAudioViewModel.previousAudio()
+        }
+
+        binding.ivBack.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
+    }
+
+    private fun togglePlayPause() {
+        if (mediaPlayer?.isPlaying == true) {
+            mediaPlayer?.pause()
+            binding.ivPlay.setImageResource(R.drawable.play)
+        } else {
+            mediaPlayer?.start()
+            binding.ivPlay.setImageResource(R.drawable.pause)
+        }
+    }
+
     private fun setupMediaPlayer(audioItem: RemoteAudioItem?) {
+        mediaPlayer?.release()
+        mediaPlayer = null
+
         audioItem?.let { item ->
             binding.tvTitle.text = item.title
             binding.tvArtistName.text = item.artist
 
             mediaPlayer = MediaPlayer().apply {
-                setDataSource(item.path)  // Set the path of the remote or local audio file
+                setDataSource(item.path)
                 prepareAsync()
                 setOnPreparedListener {
-                    binding.seekBar.max = mediaPlayer?.duration ?: 0
+                    binding.seekBar.max = duration
                     start()
                     binding.ivPlay.setImageResource(R.drawable.pause)
                     updateSeekBar()
@@ -69,7 +92,6 @@ class PlayerFragment : Fragment() {
             }
         }
 
-        // SeekBar change listener
         binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) mediaPlayer?.seekTo(progress)
@@ -86,15 +108,15 @@ class PlayerFragment : Fragment() {
         })
     }
 
-    // Update SeekBar periodically to reflect MediaPlayer's progress
     private fun updateSeekBar() {
         mediaPlayer?.let { player ->
-            binding.seekBar.progress = player.currentPosition
+            if (!isTracking) {
+                binding.seekBar.progress = player.currentPosition
+            }
             binding.tvCurrentTime.text = formatTime(player.currentPosition)
             binding.tvTotalTime.text = formatTime(player.duration)
 
-                handler.postDelayed({ updateSeekBar() }, 500)
-
+            handler.postDelayed({ updateSeekBar() }, 500)
         }
     }
 

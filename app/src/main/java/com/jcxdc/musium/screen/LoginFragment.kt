@@ -27,28 +27,26 @@ class LoginFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Sử dụng DataBindingUtil để inflate layout
+
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false)
 
-        // Initialize UserDao and DatabaseRepository
         val userDao: UserDao = UserDatabase.getInstance(requireContext()).userDao()
         val repository = DatabaseRepository(userDao)
 
-        // Initialize ViewModel using the factory
         val viewModelFactory = DatabaseViewModelFactory(repository)
         viewModel = ViewModelProvider(this, viewModelFactory).get(DatabaseViewModel::class.java)
-
-        // Set up login button click listener
+        binding.txtSignup.setOnClickListener{
+            findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
+        }
         binding.btnLogin.setOnClickListener {
             if (validateLogin()) {
                 val username = binding.edtUserName.text.toString().trim()
                 val password = binding.edtPass.text.toString().trim()
 
-                // Call ViewModel to login the user
                 viewModel.loginUser(username, password) { success, message ->
                     if (success) {
                         Toast.makeText(requireContext(), "Login successful", Toast.LENGTH_SHORT).show()
-                        // Navigate to the home screen
+
                         findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
                     } else {
                         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()

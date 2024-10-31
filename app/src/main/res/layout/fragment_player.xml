@@ -115,6 +115,7 @@
                 android:layout_height="16dp"
                 android:src="@drawable/shuffle"/>
             <ImageView
+                android:id="@+id/ivPrevious"
                 android:layout_weight="1"
                 android:layout_gravity="center_vertical"
                 android:layout_width="16dp"
@@ -130,10 +131,11 @@
                 android:layout_weight="0.75"
                 android:background="@drawable/play_round_gradient"
                 android:padding="12dp"
-                android:paddingEnd="4dp"
+
                 android:src="@drawable/play" />
 
             <ImageView
+                android:id="@+id/ivNext"
                 android:layout_weight="1"
                 android:layout_gravity="center_vertical"
                 android:layout_width="16dp"

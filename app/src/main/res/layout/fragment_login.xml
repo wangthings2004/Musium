@@ -52,6 +52,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
+                android:maxLines="1"
                 android:layout_height="wrap_content"
                 android:id="@+id/edtUserName"
                 android:drawableStart="@drawable/user"
@@ -72,6 +73,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:boxBackgroundMode="none"
+                android:maxLines="1"
                 android:id="@+id/edtPass"
                 android:inputType="textPassword"
                 android:drawableStart="@drawable/lock"

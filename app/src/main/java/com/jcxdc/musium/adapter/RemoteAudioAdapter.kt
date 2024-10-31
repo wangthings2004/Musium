@@ -1,5 +1,6 @@
 package com.jcxdc.musium.adapter
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -13,11 +14,18 @@ import javax.inject.Inject
 class RemoteAudioAdapter @Inject constructor() :
     ListAdapter<RemoteAudioItem, RemoteAudioAdapter.RemoteAudioViewHolder>(AudioDiffCallback) {
     var onItemClick: ((RemoteAudioItem) -> Unit)? = null
-
+    private val colors = listOf(
+        "#FF7777", "#FFFA77", "#4462FF", "#14FF00", "#E231FF", "#00FFFF", "#FB003C", "#F2A5FF"
+    )
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RemoteAudioViewHolder {
         return RemoteAudioViewHolder(
             ItemTopTracksBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
+    }
+    fun submitLimitedList(list: List<RemoteAudioItem>) {
+
+        val limitedList = if (list.size > 7) list.take(7) else list
+        submitList(limitedList)
     }
 
     override fun onBindViewHolder(holder: RemoteAudioViewHolder, position: Int) {
@@ -31,20 +39,15 @@ class RemoteAudioAdapter @Inject constructor() :
             binding.tvTrackTitle.text = data.title
             binding.tvArtistName.text = data.artist
             binding.tvKind.text = data.kind
-
+            val colorIndex = position % colors.size
+            binding.bottomView.setBackgroundColor(Color.parseColor(colors[colorIndex]))
 
             binding.root.setOnClickListener {
                 onItemClick?.invoke(data)
             }
         }
 
-        private fun formatDuration(duration: String): String {
-            // Assuming duration is in milliseconds, format it to mm:ss
-            val seconds = duration.toLong() / 1000
-            val minutes = seconds / 60
-            val remainingSeconds = seconds % 60
-            return String.format("%d:%02d", minutes, remainingSeconds)
-        }
+
     }
 
     companion object AudioDiffCallback : DiffUtil.ItemCallback<RemoteAudioItem>() {

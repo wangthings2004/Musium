@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -30,7 +31,7 @@ class HomeFragment : Fragment() {
     @Inject
     lateinit var remoteAudioAdapter: RemoteAudioAdapter
 
-    // ViewModel for fetching remote audio
+        // ViewModel for fetching remote audio
     private val remoteAudioViewModel: RemoteAudioViewModel by viewModels()
 
     override fun onCreateView(
@@ -46,22 +47,33 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupRecyclerView()
-        remoteAudioViewModel.fetchRemoteAudios()
-        remoteAudioViewModel.remoteAudioState.observe(viewLifecycleOwner) { state ->
-            when(state){
-                is RemoteAudioState.Loading ->{
-                    binding.ctlMain.visibility = View.GONE
-                    binding.pbLoading.visibility = View.VISIBLE
-                } is RemoteAudioState.Success ->{
-                    binding.pbLoading.visibility = View.GONE
-                    binding.ctlMain.visibility = View.VISIBLE
+        remoteAudioViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.pbLoading.visibility = if (isLoading) View.VISIBLE else View.GONE
 
-                    remoteAudioAdapter.submitList(state.data)
-                } is RemoteAudioState.Error ->{
+        }
+        remoteAudioViewModel.remoteAudios.observe(viewLifecycleOwner) { audios ->
+            audios?.let {
+                remoteAudioAdapter.submitList(it)
 
-                }
             }
         }
+//        remoteAudioViewModel.fetchRemoteAudios()
+//        remoteAudioViewModel.remoteAudioState.observe(viewLifecycleOwner) { state ->
+//            when(state){
+//                is RemoteAudioState.Loading ->{
+//                    binding.ctlMain.visibility = View.GONE
+//                    binding.pbLoading.visibility = View.VISIBLE
+//                    Toast.makeText(requireContext(), "loading", Toast.LENGTH_LONG).show()
+//                } is RemoteAudioState.Success ->{
+//                    binding.pbLoading.visibility = View.GONE
+//                    binding.ctlMain.visibility = View.VISIBLE
+//
+//                    remoteAudioAdapter.submitLimitedList(state.data)
+//                } is RemoteAudioState.Error ->{
+//                Toast.makeText(requireContext(), "fail to login", Toast.LENGTH_LONG).show()
+//                }
+//            }
+//        }
 
     }
 
@@ -71,13 +83,14 @@ class HomeFragment : Fragment() {
         binding.rvTopTracks.apply {
             layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
             adapter = remoteAudioAdapter
-            remoteAudioAdapter.onItemClick = {
-                it.isSelected = true
-                findNavController().navigate(
-                    R.id.action_homeFragment_to_playerFragment,
-                    bundleOf(API_KEY to it)
-                )
+
+            // Khi người dùng chọn một bài hát trong `setupRecyclerView`:
+            remoteAudioAdapter.onItemClick = { audioItem ->
+                val index = remoteAudioViewModel.remoteAudios.value?.indexOf(audioItem) ?: 0
+                remoteAudioViewModel.setCurrentAudioIndex(index)
+                findNavController().navigate(R.id.action_homeFragment_to_playerFragment)
             }
+
         }
     }
 }
