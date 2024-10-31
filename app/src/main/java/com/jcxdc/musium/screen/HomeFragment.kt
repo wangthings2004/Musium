@@ -31,7 +31,6 @@ class HomeFragment : Fragment() {
     @Inject
     lateinit var remoteAudioAdapter: RemoteAudioAdapter
 
-        // ViewModel for fetching remote audio
     private val remoteAudioViewModel: RemoteAudioViewModel by viewModels()
 
     override fun onCreateView(
@@ -84,7 +83,7 @@ class HomeFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
             adapter = remoteAudioAdapter
 
-            // Khi người dùng chọn một bài hát trong `setupRecyclerView`:
+
             remoteAudioAdapter.onItemClick = { audioItem ->
                 val index = remoteAudioViewModel.remoteAudios.value?.indexOf(audioItem) ?: 0
                 remoteAudioViewModel.setCurrentAudioIndex(index)
