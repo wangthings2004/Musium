@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -31,17 +32,24 @@ class PlayerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_player, container, false)
-        setupPlayerControls()
+        val currentAudioIndex = arguments?.getInt(API_KEY) ?: -1
+        if (currentAudioIndex != -1) {
+            remoteAudioViewModel.setCurrentAudioIndex(currentAudioIndex)
+        }
         observeCurrentAudio()
+        setupPlayerControls()
+
 
         return binding.root
     }
 
     private fun observeCurrentAudio() {
-        remoteAudioViewModel.currentAudioIndex.observe(viewLifecycleOwner) { index ->
+        Toast.makeText(requireContext(),"${remoteAudioViewModel.currentAudioIndex.value}",Toast.LENGTH_SHORT).show()
+        remoteAudioViewModel.currentAudioIndex.observe(viewLifecycleOwner) {
             val audioItem = remoteAudioViewModel.getCurrentAudioItem()
             setupMediaPlayer(audioItem)
         }
+
     }
 
     private fun setupPlayerControls() {

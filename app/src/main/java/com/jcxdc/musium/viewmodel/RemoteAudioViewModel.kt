@@ -43,8 +43,10 @@ class RemoteAudioViewModel @Inject constructor(
             _remoteAudios.value = data ?: emptyList()
             _isLoading.value = false
             isloaded = true
+
         }
     }
+
 
     fun setCurrentAudioIndex(index: Int) {
         _currentAudioIndex.value = index
@@ -65,6 +67,6 @@ class RemoteAudioViewModel @Inject constructor(
     }
 
     fun getCurrentAudioItem(): RemoteAudioItem? {
-        return _remoteAudios.value?.getOrNull(_currentAudioIndex.value ?: 0)
+        return _remoteAudios.value?.getOrNull(_currentAudioIndex.value!!)
     }
 }

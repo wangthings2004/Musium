@@ -44,7 +44,7 @@ class RegisterFragment : Fragment() {
                 val password = binding.edtPass.text.toString().trim()
                 val email = binding.edtMail.text.toString().trim()
 
-                // Gọi ViewModel để đăng ký người dùng
+
                 viewModel.registerUser(username, password,email) { success, message ->
                     if (success) {
                         Toast.makeText(requireContext(), "Registration Successful", Toast.LENGTH_SHORT).show()
