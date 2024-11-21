@@ -1,11 +1,11 @@
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
-    id("androidx.navigation.safeargs")
-
-        id ("kotlin-parcelize")
+    id("androidx.navigation.safeargs.kotlin")
+    id ("kotlin-parcelize")
 
 
 }
@@ -43,11 +43,13 @@ android {
     buildFeatures {
         dataBinding = true
     }
+
 }
 
 dependencies {
-    var lifecycle_version = "2.8.6"
-    var nav_version = "2.7.7"
+
+
+
 
     // Hilt
     implementation ("com.google.dagger:hilt-android:2.52")
@@ -87,6 +89,7 @@ dependencies {
 
 
     // Navigation
+    val nav_version = "2.8.4"
     implementation("androidx.navigation:navigation-fragment:$nav_version")
     implementation("androidx.navigation:navigation-ui:$nav_version")
 

@@ -10,5 +10,6 @@ data class RemoteAudioItem(
     val path: String,
     val title: String,
     var isSelected: Boolean = false,
-    var img: Int?
+    var img: Int?,
+    var id: String?
 ) : Parcelable

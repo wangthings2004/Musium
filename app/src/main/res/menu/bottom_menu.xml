@@ -7,7 +7,7 @@
         android:enabled="true"
         android:icon="@drawable/home"
         app:showAsAction="ifRoom"/>
-    <item android:id="@+id/libaryFragment"
+    <item android:id="@+id/libraryFragment"
         android:title=''
         app:showAsAction="ifRoom"
         android:enabled="true"

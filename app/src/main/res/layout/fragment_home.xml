@@ -6,7 +6,7 @@
 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".screen.HomeFragment"
+    tools:context=".ui.screen.HomeFragment"
     android:paddingTop="20dp"
     android:paddingHorizontal="30dp"
     android:background="@color/black"

@@ -9,7 +9,7 @@
         android:background="@color/black"
         android:orientation="vertical"
         android:paddingHorizontal="24dp"
-        tools:context=".screen.SplashFragment">
+        tools:context=".ui.screen.SplashFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

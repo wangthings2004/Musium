@@ -6,7 +6,7 @@
     app:startDestination="@id/loginFragment">
     <fragment
         android:id="@+id/splashFragment"
-        android:name="com.jcxdc.musium.screen.SplashFragment"
+        android:name="com.jcxdc.musium.ui.screen.SplashFragment"
         android:label="fragment_splash"
         tools:layout="@layout/fragment_splash" >
         <action
@@ -18,7 +18,7 @@
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.jcxdc.musium.screen.LoginFragment"
+        android:name="com.jcxdc.musium.ui.screen.LoginFragment"
         android:label="fragment_sign_up"
         tools:layout="@layout/fragment_login" >
         <action
@@ -30,7 +30,7 @@
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
-        android:name="com.jcxdc.musium.screen.RegisterFragment"
+        android:name="com.jcxdc.musium.ui.screen.RegisterFragment"
         android:label="fragment_register"
         tools:layout="@layout/fragment_register" >
         <action
@@ -40,7 +40,7 @@
 
         <fragment
             android:id="@+id/homeFragment"
-            android:name="com.jcxdc.musium.screen.HomeFragment"
+            android:name="com.jcxdc.musium.ui.screen.HomeFragment"
             android:label="fragment_home"
             tools:layout="@layout/fragment_home" >
             <action
@@ -56,43 +56,58 @@
         </fragment>
 
     <fragment
-        android:id="@+id/exploreFragment"
-        android:name="com.jcxdc.musium.screen.exploreFragment"
+        android:id="@+id/ExploreFragment"
+        android:name="com.jcxdc.musium.ui.screen.ExploreFragment"
         android:label="fragment_explore"
         tools:layout="@layout/fragment_explore" />
     <fragment
-        android:id="@+id/libaryFragment"
-        android:name="com.jcxdc.musium.screen.LibaryFragment"
-        android:label="fragment_libary"
-        tools:layout="@layout/fragment_libary" />
+        android:id="@+id/libraryFragment"
+        android:name="com.jcxdc.musium.ui.screen.LibraryFragment"
+        android:label="fragment_library"
+        tools:layout="@layout/fragment_library" >
+        <action
+            android:id="@+id/action_libraryFragment_to_playerFragment"
+            app:destination="@id/playerFragment" />
+    </fragment>
     <fragment
         android:id="@+id/topAlbumFragment"
-        android:name="com.jcxdc.musium.screen.TopAlbumFragment"
+        android:name="com.jcxdc.musium.ui.screen.TopAlbumFragment"
         android:label="fragment_top_album"
         tools:layout="@layout/fragment_top_album" />
     <fragment
         android:id="@+id/topArtistFragment"
-        android:name="com.jcxdc.musium.screen.TopArtistFragment"
+        android:name="com.jcxdc.musium.ui.screen.TopArtistFragment"
         android:label="fragment_top_artist"
         tools:layout="@layout/fragment_top_artist" />
     <fragment
         android:id="@+id/topTracksFragment"
-        android:name="com.jcxdc.musium.screen.TopTracksFragment"
+        android:name="com.jcxdc.musium.ui.screen.TopTracksFragment"
         android:label="fragment_top_tracks"
         tools:layout="@layout/fragment_top_tracks" />
     <fragment
         android:id="@+id/playlistFragment"
-        android:name="com.jcxdc.musium.screen.PlaylistFragment"
+        android:name="com.jcxdc.musium.ui.screen.PlaylistFragment"
         android:label="fragment_playlist"
         tools:layout="@layout/fragment_playlist" />
     <fragment
         android:id="@+id/playerFragment"
-        android:name="com.jcxdc.musium.screen.PlayerFragment"
+        android:name="com.jcxdc.musium.ui.screen.PlayerFragment"
         android:label="fragment_player"
         tools:layout="@layout/fragment_player" >
+
         <argument
-            android:name="audioItem"
-            app:argType="com.jcxdc.musium.db.RemoteAudioItem" />
+
+            android:name="isLocalMusic"
+            app:argType="boolean"
+            />
+        <argument
+
+            android:name="localAudio"
+            app:argType="integer" />
+        <argument
+
+            android:name="RemoteAudio"
+            app:argType="integer" />
     </fragment>
 
 </navigation>
