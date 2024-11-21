@@ -21,7 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    lateinit var remoteAudioItem: RemoteAudioItem by viewModels({ this@MainActivity })
+    private var remoteAudioItem: RemoteAudioItem?= null
     private val REQUEST_CODE_NOTIFICATIONS = 1001
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
