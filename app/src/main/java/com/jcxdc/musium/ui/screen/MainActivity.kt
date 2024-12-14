@@ -1,10 +1,17 @@
 package com.jcxdc.musium.ui.screen
 
 import android.Manifest
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.IBinder
+import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -17,12 +24,30 @@ import androidx.navigation.ui.setupWithNavController
 import com.jcxdc.musium.R
 import com.jcxdc.musium.databinding.ActivityMainBinding
 import com.jcxdc.musium.db.RemoteAudioItem
+import com.jcxdc.musium.service.MusicService
+import com.jcxdc.musium.ui.viewmodel.LocalAudioViewModel
+import com.jcxdc.musium.ui.viewmodel.RemoteAudioViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private var remoteAudioItem: RemoteAudioItem?= null
+    private val remoteAudioViewModel: RemoteAudioViewModel by viewModels()
+    private val localAudioViewModel: LocalAudioViewModel by viewModels()
+    private var bottomViewNavigationListener: BottomViewNavigationListener? = null
+
+
+    var musicService: MusicService? = null
     private val REQUEST_CODE_NOTIFICATIONS = 1001
+    private var serviceConnection: ServiceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            val binder = service as MusicService.MusicBinder
+            musicService = binder.getService()
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            musicService = null
+        }
+    }
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
@@ -81,18 +106,23 @@ class MainActivity : AppCompatActivity() {
         checkStoragePermission() // Check storage permission
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-
+        togglePlayPause()
+        binding.rlBottomView.visibility = View.GONE
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
         navController = navHostFragment.navController
-
+        handleBottomView()
         binding.bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.libraryFragment -> {
                     navController.navigate(R.id.libraryFragment)
                 }
+
                 R.id.homeFragment -> {
                     navController.navigate(R.id.homeFragment)
+                }
+                R.id.playlistFragment ->{
+                    navController.navigate(R.id.playlistFragment)
                 }
             }
             true
@@ -101,10 +131,50 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
                 R.id.loginFragment, R.id.registerFragment, R.id.splashFragment -> hideBottomNavigation()
+                R.id.playerFragment ->hideBottomView()
+                
                 else -> showBottomNavigation()
+
             }
         }
     }
+    fun setBottomViewNavigationListener(listener: BottomViewNavigationListener?) {
+        bottomViewNavigationListener = listener
+    }
+    private fun handleBottomView() {
+        binding.rlBottomView.setOnClickListener {
+            bottomViewNavigationListener?.navigateToPlayer()
+        }
+        binding.ivCloseBottomView.setOnClickListener{
+            binding.rlBottomView.visibility = View.GONE
+        }
+        binding.ivPlay.setOnClickListener {
+            togglePlayPause()
+        }
+    }
+    private fun togglePlayPause() {
+        if (musicService?.isPlaying() == true) {
+            musicService?.pauseTrack()
+            binding.ivPlay.setImageResource(R.drawable.play)
+        } else {
+            musicService?.resumeTrack()
+            binding.ivPlay.setImageResource(R.drawable.pause)
+        }
+    }
+
+    fun updateBottomViewTitle(title: String,duration:String) {
+
+        binding.bottomViewTitle.text = title
+        binding.bottomViewDuration.text = duration
+    }
+
+    fun hideBottomView(){
+        binding.rlBottomView.visibility = View.GONE
+    }
+    fun showBottomView(){
+        binding.rlBottomView.visibility = View.VISIBLE
+    }
+
 
     private fun showBottomNavigation() {
         binding.bottomNavigationView.visibility = View.VISIBLE
@@ -113,7 +183,17 @@ class MainActivity : AppCompatActivity() {
     private fun hideBottomNavigation() {
         binding.bottomNavigationView.visibility = View.GONE
     }
-
+    override fun onStart() {
+        super.onStart()
+        Intent(this, MusicService::class.java).also { intent ->
+            bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+        }
+    }
+    override fun onStop() {
+        super.onStop()
+        unbindService(serviceConnection)
+        musicService = null
+    }
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,

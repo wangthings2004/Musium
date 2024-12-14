@@ -53,6 +53,7 @@ dependencies {
 
     // Hilt
     implementation ("com.google.dagger:hilt-android:2.52")
+    implementation(libs.androidx.preference)
     kapt ("com.google.dagger:hilt-compiler:2.52")
 
 // Retrofit
@@ -100,6 +101,7 @@ dependencies {
     implementation ("com.squareup.moshi:moshi:1.13.0")
     implementation ("com.squareup.moshi:moshi-kotlin:1.13.0")
 
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -107,6 +109,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+
 
     // Test dependencies
     testImplementation(libs.junit)

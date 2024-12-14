@@ -100,14 +100,18 @@
             android:name="isLocalMusic"
             app:argType="boolean"
             />
-        <argument
 
-            android:name="localAudio"
-            app:argType="integer" />
-        <argument
-
-            android:name="RemoteAudio"
-            app:argType="integer" />
     </fragment>
+    <fragment
+        android:id="@+id/localLibraryFragment"
+        android:name="com.jcxdc.musium.ui.screen.LocalLibraryFragment"
+        android:label="fragment_local_library"
+        tools:layout="@layout/fragment_local_library" />
+    <fragment
+        android:id="@+id/remoteLibraryFragment"
+        android:name="com.jcxdc.musium.RemoteLibraryFragment"
+        android:label="fragment_remote_library"
+        tools:layout="@layout/fragment_remote_library" />
+
 
 </navigation>

@@ -37,7 +37,13 @@ class LocalAudioViewModel @Inject constructor(
     init {
         loadLocalAudios()
     }
-    
+    fun deselectCurrentAudio() {
+        _selectedAudio.value?.isSelected = false
+    }
+
+    fun getSelectedAudio(): RemoteAudioItem? {
+        return _localAudios.value?.find { it.isSelected }
+    }
     private fun loadLocalAudios() {
 
         _localAudios.value = songDataSource.getAllAudio()
@@ -50,14 +56,14 @@ class LocalAudioViewModel @Inject constructor(
     fun nextAudio() {
         val nextIndex = (_currentAudioIndex.value ?: 0) + 1
         if (nextIndex < (_localAudios.value?.size ?: 0)) {
-            _currentAudioIndex.value = nextIndex
+            setCurrentAudioIndex(nextIndex)
         }
     }
 
     fun previousAudio() {
         val prevIndex = (_currentAudioIndex.value ?: 0) - 1
         if (prevIndex >= 0) {
-            _currentAudioIndex.value = prevIndex
+            setCurrentAudioIndex(prevIndex)
         }
     }
 

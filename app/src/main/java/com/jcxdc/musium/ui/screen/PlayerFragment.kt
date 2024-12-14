@@ -11,14 +11,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
+import androidx.activity.OnBackPressedCallback
+import androidx.core.content.ContentProviderCompat.requireContext
 
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.jcxdc.musium.R
 
 import com.jcxdc.musium.databinding.FragmentPlayerBinding
+import com.jcxdc.musium.db.RemoteAudioItem
 
 import com.jcxdc.musium.service.MusicService
 import com.jcxdc.musium.ui.viewmodel.LocalAudioViewModel
@@ -27,20 +31,14 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class PlayerFragment : Fragment() {
-
     private lateinit var binding: FragmentPlayerBinding
-
-
     private val remoteAudioViewModel: RemoteAudioViewModel by viewModels({ requireActivity() })
     private val localAudioViewModel: LocalAudioViewModel by viewModels({ requireActivity() })
     private val args: PlayerFragmentArgs by navArgs()
-
-
     private var musicService: MusicService? = null
     private var isServiceBound = false
     private val handler = Handler(Looper.getMainLooper())
     private var isTracking = false
-
 
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
@@ -55,23 +53,46 @@ class PlayerFragment : Fragment() {
                 observeRemoteAudio()
             }
             isServiceBound = true
-
-
         }
-
         override fun onServiceDisconnected(name: ComponentName?) {
             isServiceBound = false
             musicService = null
         }
     }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_player, container, false)
         setupPlayerControls()
+        handleBackPress()
+        setupSeekBar()
+        togglePlayPause()
         return binding.root
+    }
+
+
+    private fun handleBackPress() {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                (requireActivity() as? MainActivity)?.showBottomView()
+                findNavController().popBackStack()
+            }
+        })
+        binding.ivBack.setOnClickListener {
+            (requireActivity() as? MainActivity)?.showBottomView()
+            findNavController().popBackStack()
+        }
+        binding.ivX.setOnClickListener{
+            musicService?.stopTrack()
+
+            if (isServiceBound) {
+                requireActivity().unbindService(serviceConnection)
+                isServiceBound = false
+            }
+            (requireActivity() as? MainActivity)?.hideBottomView()
+            findNavController().popBackStack()
+        }
     }
 
     override fun onStart() {
@@ -94,19 +115,24 @@ class PlayerFragment : Fragment() {
     }
 
     private fun observeLocalAudio() {
-
+        val audioItem = localAudioViewModel.getCurrentAudioItem()
+        (activity as? MainActivity)?.updateBottomViewTitle(audioItem!!.title,formatTime(audioItem!!.duration))
         localAudioViewModel.currentAudioIndex.observe(viewLifecycleOwner) {
             val audioItem = localAudioViewModel.getCurrentAudioItem()
             audioItem?.let { item ->
-                binding.tvTitle.text = item.title
-                binding.tvArtistName.text = item.artist
+                binding.tvTitle.text = audioItem.title
+                binding.tvArtistName.text = audioItem.artist
                 musicService?.playLocalTrack(localAudioViewModel)
                 updateSeekBar()
             }
         }
     }
 
+
+
     private fun observeRemoteAudio() {
+        val audioItem = remoteAudioViewModel.getCurrentAudioItem()
+        (activity as? MainActivity)?.updateBottomViewTitle(audioItem!!.title,formatTime(audioItem!!.duration))
         remoteAudioViewModel.currentAudioIndex.observe(viewLifecycleOwner) {
             val audioItem = remoteAudioViewModel.getCurrentAudioItem()
             audioItem?.let { item ->
@@ -173,6 +199,7 @@ class PlayerFragment : Fragment() {
         val seconds = (ms / 1000) % 60
         return String.format("%02d:%02d", minutes, seconds)
     }
+
 
     override fun onDestroy() {
         super.onDestroy()

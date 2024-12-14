@@ -6,42 +6,37 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.jcxdc.musium.R
+import com.jcxdc.musium.databinding.ItemTopAlbumBinding
 import com.jcxdc.musium.databinding.ItemTopTracksBinding
-import com.jcxdc.musium.db.RemoteAudio
 import com.jcxdc.musium.db.RemoteAudioItem
 import javax.inject.Inject
 
-class RemoteAudioAdapter @Inject constructor() :
-    ListAdapter<RemoteAudioItem, RemoteAudioAdapter.RemoteAudioViewHolder>(AudioDiffCallback) {
+class TopAlbumAdapter @Inject constructor() :
+    ListAdapter<RemoteAudioItem, TopAlbumAdapter.TopAlbumViewHolder>(AudioDiffCallback) {
     var onItemClick: ((RemoteAudioItem) -> Unit)? = null
-    private val colors = listOf(
-        "#FF7777", "#FFFA77", "#4462FF", "#14FF00", "#E231FF", "#00FFFF", "#FB003C", "#F2A5FF"
-    )
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RemoteAudioViewHolder {
-        return RemoteAudioViewHolder(
-            ItemTopTracksBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopAlbumViewHolder {
+        return TopAlbumViewHolder(
+            ItemTopAlbumBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
-    override fun onBindViewHolder(holder: RemoteAudioViewHolder, position: Int) {
+    fun submitLimitedList(list: List<RemoteAudioItem>) {
+
+        val limitedList = if (list.size > 4) list.take(4) else list
+        submitList(limitedList)
+    }
+    override fun onBindViewHolder(holder: TopAlbumViewHolder, position: Int) {
         val audio = getItem(position)
         holder.bind(audio)
     }
 
-    inner class RemoteAudioViewHolder(private val binding: ItemTopTracksBinding) :
+    inner class TopAlbumViewHolder(private val binding: ItemTopAlbumBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(data: RemoteAudioItem) {
-            binding.tvTrackTitle.text = data.title
+            binding.tvSongName.text = data.title
             binding.tvArtistName.text = data.artist
-            binding.tvKind.text = data.kind
-            val colorIndex = position % colors.size
-            binding.bottomView.setBackgroundColor(Color.parseColor(colors[colorIndex]))
-//            if (data.isSelected) {
-//                binding.ctlRemoteTracks.alpha = 0.1f
-//            } else {
-//                binding.ctlRemoteTracks.alpha = 1f
-//            }
+
             binding.root.setOnClickListener {
                 onItemClick?.invoke(data)
             }

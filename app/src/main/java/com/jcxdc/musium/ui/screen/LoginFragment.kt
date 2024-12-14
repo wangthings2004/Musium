@@ -1,6 +1,7 @@
 package com.jcxdc.musium.ui.screen
 
 import DatabaseViewModelFactory
+import android.content.Context
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -19,7 +20,8 @@ import com.jcxdc.musium.model.repository.DatabaseRepository
 import com.jcxdc.musium.ui.viewmodel.DatabaseViewModel
 
 class LoginFragment : Fragment() {
-
+    var saveText = ""
+    var savePassword = ""
     private lateinit var binding: FragmentLoginBinding
     private lateinit var viewModel: DatabaseViewModel
 
@@ -29,7 +31,7 @@ class LoginFragment : Fragment() {
     ): View? {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false)
-
+        showDataFromSharePreferences()
         val userDao: UserDao = UserDatabase.getInstance(requireContext()).userDao()
         val repository = DatabaseRepository(userDao)
 
@@ -42,7 +44,7 @@ class LoginFragment : Fragment() {
             if (validateLogin()) {
                 val username = binding.edtUserName.text.toString().trim()
                 val password = binding.edtPass.text.toString().trim()
-
+                saveData()
                 viewModel.loginUser(username, password) { success, message ->
                     if (success) {
                         Toast.makeText(requireContext(), "Login successful", Toast.LENGTH_SHORT).show()
@@ -55,8 +57,11 @@ class LoginFragment : Fragment() {
             }
         }
 
+
         return binding.root
     }
+
+
 
     private fun validateLogin(): Boolean {
         val username = binding.edtUserName.text.toString().trim()
@@ -72,6 +77,37 @@ class LoginFragment : Fragment() {
                 false
             }
             else -> true
+        }
+    }
+        private fun showDataFromSharePreferences() {
+        var sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE)?: return
+        val checkSignIn = sharedPreferences?.getBoolean("LogIn",false)?:false
+        val savedText = sharedPreferences?.getString("SaveText",saveText)
+        val savedPassword = sharedPreferences?.getString("SavePassword",savePassword)
+        val checkBox = sharedPreferences?.getBoolean("CheckBox",false)?:false
+        val isChecked = checkBox && checkSignIn
+        binding.chkbRemember.isChecked = isChecked
+        if (isChecked) {
+            binding.edtUserName.setText(savedText)
+            binding.edtPass.setText(savedPassword)
+        } else {
+            binding.edtUserName.setText("")
+            binding.edtPass.setText("")
+        }
+    }
+
+    private fun saveData() {
+        saveText = binding.edtUserName.text.toString()
+        savePassword = binding.edtPass.text.toString()
+        var sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+        with(sharedPreferences?.edit()) {
+            this?.putBoolean("LogIn", true)
+            if (binding.chkbRemember.isChecked) {
+                this?.putString("SaveText", saveText)
+                this?.putString("SavePassword", savePassword)
+            }
+            this?.putBoolean("CheckBox", binding.chkbRemember.isChecked)
+            this?.apply()
         }
     }
 }

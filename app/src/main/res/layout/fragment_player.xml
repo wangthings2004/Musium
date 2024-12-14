@@ -133,7 +133,7 @@
                 android:background="@drawable/play_round_gradient"
                 android:padding="12dp"
 
-                android:src="@drawable/pause" />
+                 />
 
             <ImageView
                 android:id="@+id/ivNext"

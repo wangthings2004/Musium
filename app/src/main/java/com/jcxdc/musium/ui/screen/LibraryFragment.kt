@@ -1,5 +1,6 @@
 package com.jcxdc.musium.ui.screen
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,15 +12,17 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.tabs.TabLayoutMediator
 import com.jcxdc.musium.databinding.FragmentLibraryBinding
 import com.jcxdc.musium.R
 import com.jcxdc.musium.SongDataSource
 import com.jcxdc.musium.ui.adapter.LocalMusicAdapter
+import com.jcxdc.musium.ui.adapter.ViewPagerAdapter
 
 import com.jcxdc.musium.ui.viewmodel.LocalAudioViewModel
 
 
-class LibraryFragment : Fragment() {
+class LibraryFragment : Fragment(), BottomViewNavigationListener {
     lateinit var binding : FragmentLibraryBinding
     lateinit var songDataSource: SongDataSource
     lateinit var localMusicAdapter: LocalMusicAdapter
@@ -31,8 +34,17 @@ class LibraryFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_library, container, false)
         songDataSource = SongDataSource(requireContext().contentResolver)
         localMusicAdapter = LocalMusicAdapter()
+        setupTabLayout()
         return binding.root
 
+    }
+
+    private fun setupTabLayout() {
+        val adapter = ViewPagerAdapter(requireActivity())
+        binding.viewPager.adapter = adapter
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
+            tab.text = if (position == 0) "Local" else "Remote"
+        }.attach()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -40,24 +52,15 @@ class LibraryFragment : Fragment() {
         setupLocalMusicAdapter()
         initView()
     }
+    private fun formatTime(ms: Int): String {
+        val minutes = ms / 1000 / 60
+        val seconds = (ms / 1000) % 60
+        return String.format("%02d:%02d", minutes, seconds)
+    }
 
     private fun setupLocalMusicAdapter() {
 
-        binding.rvLocalMusic.apply {
-            layoutManager =
-                LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-            adapter = localMusicAdapter
-            localMusicAdapter.onItemClick = { music,position ->
-                Log.d("TAG", "Local audio item: ${position}")
-                localAudioViewModel.setCurrentAudioIndex(position)
-                Log.d("TAG", "Local audio item: ${localAudioViewModel.currentAudioIndex.value}")
 
-                findNavController().navigate(
-                    LibraryFragmentDirections.actionLibraryFragmentToPlayerFragment(true,position,0)
-                )
-
-            }
-        }
     }
 
     private fun initView() {
@@ -65,6 +68,22 @@ class LibraryFragment : Fragment() {
         localMusicAdapter.submitList(musicList)
 
 
+    }
+
+    override fun navigateToPlayer() {
+        val action = LibraryFragmentDirections.actionLibraryFragmentToPlayerFragment(true)
+        findNavController().navigate(action)
+    }
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is MainActivity) {
+            context.setBottomViewNavigationListener(this)
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        (requireActivity() as? MainActivity)?.setBottomViewNavigationListener(null)
     }
 
 

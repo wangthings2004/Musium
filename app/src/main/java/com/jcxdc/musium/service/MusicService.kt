@@ -57,15 +57,16 @@ class MusicService : Service() {
     }
     fun playLocalTrack(localAudioViewModel: LocalAudioViewModel) {
         val localItem = localAudioViewModel.getCurrentAudioItem()
-        mediaPlayer?.release()
-        mediaPlayer = MediaPlayer().apply {
-            setDataSource(localItem?.path)
-            prepare()
-            start()
+        if (localItem != null && (currentTrackIndex != localAudioViewModel.currentAudioIndex.value || mediaPlayer == null)) {
+            mediaPlayer?.release()
+            mediaPlayer = MediaPlayer().apply {
+                setDataSource(localItem.path)
+                prepare()
+                start()
+            }
+            currentTrackIndex = localAudioViewModel.currentAudioIndex.value ?: -1
+            showNotification(localAudioItem = localItem, null)
         }
-        showNotification(localAudioItem = localItem,null)
-
-
     }
     fun playTrack(remoteAudioViewModel: RemoteAudioViewModel) {
         val audioItem = remoteAudioViewModel.getCurrentAudioItem()
@@ -82,9 +83,13 @@ class MusicService : Service() {
     }
     fun setLocalAudioViewModel(localAudioViewModel: LocalAudioViewModel?) {
         this.localAudioViewModel = localAudioViewModel
+        remoteAudioViewModel?.deselectCurrentAudio()
+
     }
     fun setRemoteAudioViewModel(remoteAudioViewModel: RemoteAudioViewModel?) {
         this.remoteAudioViewModel = remoteAudioViewModel
+        localAudioViewModel?.deselectCurrentAudio()
+
     }
     fun nextRemoteAudioTrack(){
         remoteAudioViewModel?.nextAudio()
