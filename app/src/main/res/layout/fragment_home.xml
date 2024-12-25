@@ -9,8 +9,8 @@
     tools:context=".ui.screen.HomeFragment"
     android:paddingTop="20dp"
     android:paddingHorizontal="30dp"
-    android:background="@color/black"
-    android:paddingBottom="50dp">
+    android:background="@color/black_bg"
+    android:paddingBottom="60dp">
 
     <ScrollView
         android:layout_width="match_parent"

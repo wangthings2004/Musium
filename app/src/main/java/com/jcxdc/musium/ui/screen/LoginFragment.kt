@@ -15,7 +15,7 @@ import androidx.navigation.fragment.findNavController
 import com.jcxdc.musium.R
 import com.jcxdc.musium.databinding.FragmentLoginBinding
 import com.jcxdc.musium.db.UserDao
-import com.jcxdc.musium.db.UserDatabase
+
 import com.jcxdc.musium.model.repository.DatabaseRepository
 import com.jcxdc.musium.ui.viewmodel.DatabaseViewModel
 
@@ -28,7 +28,7 @@ class LoginFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false)
         showDataFromSharePreferences()

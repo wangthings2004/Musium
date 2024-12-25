@@ -60,7 +60,7 @@ class HomeFragment : Fragment(), BottomViewNavigationListener {
         setupRecyclerView()
         remoteAudioViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.pbLoading.visibility = if (isLoading) View.VISIBLE else View.GONE
-            //grrgrgeggrrggr
+
         }
         remoteAudioViewModel.remoteAudios.observe(viewLifecycleOwner) { audios ->
             audios?.let {

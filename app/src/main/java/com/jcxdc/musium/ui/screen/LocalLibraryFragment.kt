@@ -1,5 +1,6 @@
 package com.jcxdc.musium.ui.screen
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +29,7 @@ class LocalLibraryFragment : Fragment(){
         loadLocalMusic()
         return binding.root
     }
+    @SuppressLint("DefaultLocale")
     private fun formatTime(ms: Int): String {
         val minutes = ms / 1000 / 60
         val seconds = (ms / 1000) % 60
