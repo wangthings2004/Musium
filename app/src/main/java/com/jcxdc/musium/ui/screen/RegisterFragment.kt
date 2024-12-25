@@ -18,7 +18,7 @@ import androidx.navigation.fragment.findNavController
 import com.jcxdc.musium.R
 import com.jcxdc.musium.databinding.FragmentRegisterBinding
 import com.jcxdc.musium.db.UserDao
-import com.jcxdc.musium.db.UserDatabase
+
 import com.jcxdc.musium.model.repository.DatabaseRepository
 import com.jcxdc.musium.ui.viewmodel.DatabaseViewModel
 

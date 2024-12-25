@@ -6,9 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.jcxdc.musium.R
 import com.jcxdc.musium.databinding.ItemTopTracksBinding
-import com.jcxdc.musium.db.RemoteAudio
 import com.jcxdc.musium.db.RemoteAudioItem
 import javax.inject.Inject
 
@@ -37,11 +35,6 @@ class RemoteAudioAdapter @Inject constructor() :
             binding.tvKind.text = data.kind
             val colorIndex = position % colors.size
             binding.bottomView.setBackgroundColor(Color.parseColor(colors[colorIndex]))
-//            if (data.isSelected) {
-//                binding.ctlRemoteTracks.alpha = 0.1f
-//            } else {
-//                binding.ctlRemoteTracks.alpha = 1f
-//            }
             binding.root.setOnClickListener {
                 onItemClick?.invoke(data)
             }

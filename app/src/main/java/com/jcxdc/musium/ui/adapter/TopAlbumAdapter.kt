@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.jcxdc.musium.databinding.ItemTopAlbumBinding
-import com.jcxdc.musium.databinding.ItemTopTracksBinding
 import com.jcxdc.musium.db.RemoteAudioItem
 import javax.inject.Inject
 
