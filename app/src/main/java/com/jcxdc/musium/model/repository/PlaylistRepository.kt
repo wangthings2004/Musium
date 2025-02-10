@@ -2,9 +2,12 @@ package com.jcxdc.musium.model.repository
 
 import com.jcxdc.musium.db.Playlist
 import com.jcxdc.musium.db.PlaylistDao
+import javax.inject.Inject
 
-class PlaylistRepository(private val dao: PlaylistDao) {
+class PlaylistRepository @Inject constructor(
+    private val dao: PlaylistDao
+) {
     suspend fun insertPlaylist(playlist: Playlist) = dao.insertPlaylist(playlist)
-    suspend fun getPlaylistsByUserId(userId: Int) = dao.getPlaylistsByUserId(userId)
+    suspend fun getPlaylists() = dao.getPlaylists()
     suspend fun deletePlaylist(playlist: Playlist) = dao.deletePlaylist(playlist)
 }

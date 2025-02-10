@@ -10,7 +10,7 @@
         android:background="@color/black"
         android:paddingHorizontal="24dp"
         android:orientation="vertical"
-        tools:context=".ui.screen.SplashFragment">
+        tools:context=".ui.screen.splash.SplashFragment">
 
         <FrameLayout
             android:id="@+id/framelayout"

@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jcxdc.musium.db.RemoteAudioItem
+import com.jcxdc.musium.db.AudioItem
 import com.jcxdc.musium.model.repository.APIRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -17,13 +17,13 @@ class RemoteAudioViewModel @Inject constructor(
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    private val _remoteAudios = MutableLiveData<List<RemoteAudioItem>>()
-    val remoteAudios: LiveData<List<RemoteAudioItem>> = _remoteAudios
+    private val _remoteAudios = MutableLiveData<List<AudioItem>>()
+    val remoteAudios: LiveData<List<AudioItem>> = _remoteAudios
 
     private val _currentAudioIndex = MutableLiveData<Int>()
     val currentAudioIndex: LiveData<Int> = _currentAudioIndex
-    private val _selectedAudio = MutableLiveData<RemoteAudioItem?>()
-    val selectedAudio: LiveData<RemoteAudioItem?> = _selectedAudio
+    private val _selectedAudio = MutableLiveData<AudioItem?>()
+    val selectedAudio: LiveData<AudioItem?> = _selectedAudio
     init {
         if (!isloaded) loadRemoteAudios()
     }
@@ -48,7 +48,7 @@ class RemoteAudioViewModel @Inject constructor(
         }
     }
 
-    fun getSelectedAudio(): RemoteAudioItem? {
+    fun getSelectedAudio(): AudioItem? {
         return _remoteAudios.value?.find { it.isSelected }
     }
 
@@ -73,7 +73,7 @@ class RemoteAudioViewModel @Inject constructor(
         }
     }
 
-    fun getCurrentAudioItem(): RemoteAudioItem? {
+    fun getCurrentAudioItem(): AudioItem? {
         return _remoteAudios.value?.getOrNull(_currentAudioIndex.value!!)
     }
 }

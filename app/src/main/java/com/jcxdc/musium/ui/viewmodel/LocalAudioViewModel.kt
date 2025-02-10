@@ -1,17 +1,12 @@
 package com.jcxdc.musium.ui.viewmodel
 
-import android.content.ContentResolver
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.jcxdc.musium.SongDataSource
-import com.jcxdc.musium.db.RemoteAudioItem
+import com.jcxdc.musium.content_provider.SongDataSource
+import com.jcxdc.musium.db.AudioItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import org.koin.core.KoinApplication.Companion.init
 import javax.inject.Inject
 
 @HiltViewModel
@@ -19,13 +14,13 @@ class LocalAudioViewModel @Inject constructor(
     private val songDataSource: SongDataSource
 ) : ViewModel() {
 
-    private val _localAudios = MutableLiveData<List<RemoteAudioItem>>()
-    val localAudios: LiveData<List<RemoteAudioItem>> = _localAudios
+    private val _localAudios = MutableLiveData<List<AudioItem>>()
+    val localAudios: LiveData<List<AudioItem>> = _localAudios
 
     private val _currentAudioIndex = MutableLiveData<Int>()
     val currentAudioIndex: LiveData<Int> = _currentAudioIndex
-    private val _selectedAudio = MutableLiveData<RemoteAudioItem?>()
-    val selectedAudio: LiveData<RemoteAudioItem?> = _selectedAudio
+    private val _selectedAudio = MutableLiveData<AudioItem?>()
+    val selectedAudio: LiveData<AudioItem?> = _selectedAudio
 
     fun selectAudio(index: Int) {
         _localAudios.value = _localAudios.value?.mapIndexed { i, audioItem ->
@@ -41,7 +36,7 @@ class LocalAudioViewModel @Inject constructor(
         _selectedAudio.value?.isSelected = false
     }
 
-    fun getSelectedAudio(): RemoteAudioItem? {
+    fun getSelectedAudio(): AudioItem? {
         return _localAudios.value?.find { it.isSelected }
     }
     private fun loadLocalAudios() {
@@ -59,6 +54,9 @@ class LocalAudioViewModel @Inject constructor(
             setCurrentAudioIndex(nextIndex)
         }
     }
+    fun setLocalAudios(audios: List<AudioItem>) {
+        _localAudios.value = audios
+    }
 
     fun previousAudio() {
         val prevIndex = (_currentAudioIndex.value ?: 0) - 1
@@ -67,7 +65,7 @@ class LocalAudioViewModel @Inject constructor(
         }
     }
 
-    fun getCurrentAudioItem(): RemoteAudioItem? {
+    fun getCurrentAudioItem(): AudioItem? {
         return _localAudios.value?.getOrNull(_currentAudioIndex.value ?: 0)
     }
 

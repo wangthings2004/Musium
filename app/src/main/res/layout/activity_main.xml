@@ -28,7 +28,6 @@
             android:background="@drawable/blur_bg"
             app:itemIconSize="30dp"
             app:itemIconTint="@color/bottom_view_color"
-
             app:itemPaddingTop="12dp"
             app:itemTextColor="@color/bottom_view_color"
             app:labelVisibilityMode="labeled"
@@ -37,7 +36,7 @@
             app:layout_constraintBottom_toBottomOf="parent"/>
 
         <RelativeLayout
-            android:visibility="gone"
+
             android:id="@+id/rlBottomView"
             android:layout_width="match_parent"
             android:layout_height="65dp"

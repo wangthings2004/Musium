@@ -9,30 +9,20 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
-import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupWithNavController
 import com.jcxdc.musium.R
 import com.jcxdc.musium.databinding.ActivityMainBinding
-import com.jcxdc.musium.db.RemoteAudioItem
 import com.jcxdc.musium.service.MusicService
-import com.jcxdc.musium.ui.viewmodel.LocalAudioViewModel
-import com.jcxdc.musium.ui.viewmodel.RemoteAudioViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private val remoteAudioViewModel: RemoteAudioViewModel by viewModels()
-    private val localAudioViewModel: LocalAudioViewModel by viewModels()
     private var bottomViewNavigationListener: BottomViewNavigationListener? = null
 
 
@@ -147,6 +137,8 @@ class MainActivity : AppCompatActivity() {
         }
         binding.ivCloseBottomView.setOnClickListener{
             binding.rlBottomView.visibility = View.GONE
+            musicService?.stopTrack()
+            musicService?.stopMusicService()
         }
         binding.ivPlay.setOnClickListener {
             togglePlayPause()

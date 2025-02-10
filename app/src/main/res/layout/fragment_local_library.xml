@@ -5,9 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.screen.LocalLibraryFragment">
+    android:background="@color/black_bg"
+    tools:context=".ui.screen.library.LocalLibraryFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvLocalLibrary"
         android:layout_width="match_parent"

@@ -12,7 +12,7 @@ import android.os.IBinder
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import com.jcxdc.musium.R
-import com.jcxdc.musium.db.RemoteAudioItem
+import com.jcxdc.musium.db.AudioItem
 import com.jcxdc.musium.ui.viewmodel.LocalAudioViewModel
 import com.jcxdc.musium.ui.viewmodel.RemoteAudioViewModel
 
@@ -133,7 +133,7 @@ class MusicService : Service() {
         mediaPlayer?.seekTo(position)
     }
 
-    private fun showNotification(localAudioItem: RemoteAudioItem?, remoteAudioItem: RemoteAudioItem?) {
+    private fun showNotification(localAudioItem: AudioItem?, remoteAudioItem: AudioItem?) {
         val audioItem = localAudioItem ?: remoteAudioItem
         val isLocal = localAudioItem != null
 
@@ -210,9 +210,13 @@ class MusicService : Service() {
         return START_STICKY
     }
 
-
+    fun stopMusicService() {
+        stopForeground(true) // Xóa notification
+        stopSelf() // Dừng service
+    }
 
     override fun onDestroy() {
+        stopMusicService()
         mediaPlayer?.release()
         mediaPlayer = null
         super.onDestroy()

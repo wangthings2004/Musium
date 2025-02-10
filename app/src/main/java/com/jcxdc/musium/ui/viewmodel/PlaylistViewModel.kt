@@ -6,11 +6,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jcxdc.musium.db.Playlist
 import com.jcxdc.musium.model.repository.PlaylistRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class PlaylistViewModel(private val repository: PlaylistRepository) : ViewModel() {
+@HiltViewModel
+class PlaylistViewModel @Inject constructor(private val repository: PlaylistRepository) : ViewModel() {
 
     private val _playlists = MutableLiveData<List<Playlist>>()
     val playlists: LiveData<List<Playlist>> get() = _playlists
@@ -18,11 +21,11 @@ class PlaylistViewModel(private val repository: PlaylistRepository) : ViewModel(
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> get() = _errorMessage
 
-    fun fetchPlaylists(userId: Int) {
+    fun fetchPlaylists() {
         viewModelScope.launch {
             try {
                 val fetchedPlaylists = withContext(Dispatchers.IO) {
-                    repository.getPlaylistsByUserId(userId)
+                    repository.getPlaylists()
                 }
                 _playlists.value = fetchedPlaylists
                 _errorMessage.value = null
@@ -32,14 +35,14 @@ class PlaylistViewModel(private val repository: PlaylistRepository) : ViewModel(
         }
     }
 
-    fun createPlaylist(userId: Int, title: String, onResult: (Boolean, String) -> Unit) {
+    fun createPlaylist(title: String, onResult: (Boolean, String) -> Unit) {
         viewModelScope.launch {
             try {
-                val newPlaylist = Playlist(id = 0, userId = userId, title = title)
+                val newPlaylist = Playlist(id = 0, title = title)
                 withContext(Dispatchers.IO) {
                     repository.insertPlaylist(newPlaylist)
                 }
-                fetchPlaylists(userId) // Refresh playlists after creation
+                fetchPlaylists() // Refresh playlists after creation
                 onResult(true, "Playlist created successfully")
             } catch (e: Exception) {
                 onResult(false, "Failed to create playlist: ${e.message}")
@@ -53,7 +56,7 @@ class PlaylistViewModel(private val repository: PlaylistRepository) : ViewModel(
                 withContext(Dispatchers.IO) {
                     repository.deletePlaylist(playlist)
                 }
-                fetchPlaylists(playlist.userId) // Refresh playlists after deletion
+                fetchPlaylists() // Refresh playlists after deletion
                 onResult(true, "Playlist deleted successfully")
             } catch (e: Exception) {
                 onResult(false, "Failed to delete playlist: ${e.message}")

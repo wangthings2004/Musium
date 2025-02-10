@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+<androidx.constraintlayout.widget.ConstraintLayout
 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.screen.HomeFragment"
+    tools:context=".ui.screen.home.HomeFragment"
     android:paddingTop="20dp"
     android:paddingHorizontal="30dp"
     android:background="@color/black_bg"
@@ -27,7 +28,7 @@
                 android:id="@+id/profile_image"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:src="@mipmap/ic_launcher"
+                android:src="@drawable/img_avt_user"
                 android:scaleType="centerCrop"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/circle_shape"
@@ -108,13 +109,7 @@
                 android:layout_marginTop="14dp"
                 android:text="Top Album" />
 
-            <TextView
-                android:textColor="#00C2CB"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/tvTopAlbum"
-                android:text="See all"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvTopAlbum"
@@ -136,13 +131,6 @@
                 android:layout_marginTop="14dp"
                 android:text="Top Tracks" />
 
-            <TextView
-                android:textColor="#00C2CB"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/tvTopTracks"
-                android:text="See all"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
@@ -164,13 +152,13 @@
                 android:layout_marginTop="14dp"
                 android:text="Top Artists" />
 
-            <TextView
-                android:textColor="#00C2CB"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/tvTopArtists"
-                android:text="See all"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+<!--            <TextView-->
+<!--                android:textColor="#00C2CB"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="@id/tvTopArtists"-->
+<!--                android:text="See all"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content" />-->
 
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"

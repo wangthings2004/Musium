@@ -21,7 +21,7 @@
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/cassette_head"
+            android:src="@drawable/img_library1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
