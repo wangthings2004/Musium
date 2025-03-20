@@ -28,21 +28,37 @@
             android:background="@drawable/blur_bg"
             app:itemIconSize="30dp"
             app:itemIconTint="@color/bottom_view_color"
-
             app:itemPaddingTop="12dp"
             app:itemTextColor="@color/bottom_view_color"
             app:labelVisibilityMode="labeled"
             app:menu="@menu/bottom_menu"
             style="@style/BottomNavigationViewStyle"
             app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <RelativeLayout
+
+            android:id="@+id/rlBottomView"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            app:layout_constraintBottom_toTopOf="@id/bottomNavigationView">
+            <ImageView
+                android:id="@+id/ivCloseBottomView"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@drawable/baseline_close_24"
+                android:tint="@color/white"
+                android:layout_alignParentRight="true"
+                android:layout_toLeftOf="@+id/ctLayoutBottomView"
+                />
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:visibility="invisible"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/ctLayoutBottomView"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:orientation="horizontal"
             android:paddingHorizontal="20dp"
             android:background="#303030"
-            app:layout_constraintBottom_toTopOf="@id/bottomNavigationView">
+            >
             <ImageView
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -52,9 +68,10 @@
                 android:layout_height="28dp"
                 android:layout_weight="1"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/play_arrow"
+                android:src="@drawable/pause"
                 app:layout_constraintBottom_toBottomOf="parent"/>
             <TextView
+                android:id="@+id/bottomViewTitle"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -70,14 +87,15 @@
                 android:layout_marginStart="40dp"
 
 
-                android:text="Anh khong lam gi dau anh theaaaaaaaaaaaaaaaaaaaaaaaa"
+
 
                 />
             <TextView
+                android:id="@+id/bottomViewDuration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:text="04:02"
+
                 android:gravity="end"
                 android:layout_weight="1"
                 android:layout_gravity="center_vertical"
@@ -86,6 +104,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
+        </RelativeLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

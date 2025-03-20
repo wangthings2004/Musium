@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_view"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/splashFragment">
     <fragment
         android:id="@+id/splashFragment"
-        android:name="com.jcxdc.musium.ui.screen.SplashFragment"
+        android:name="com.jcxdc.musium.ui.screen.splash.SplashFragment"
         android:label="fragment_splash"
         tools:layout="@layout/fragment_splash" >
         <action
@@ -18,7 +18,7 @@
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.jcxdc.musium.ui.screen.LoginFragment"
+        android:name="com.jcxdc.musium.ui.screen.login.LoginFragment"
         android:label="fragment_sign_up"
         tools:layout="@layout/fragment_login" >
         <action
@@ -30,44 +30,57 @@
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
-        android:name="com.jcxdc.musium.ui.screen.RegisterFragment"
+        android:name="com.jcxdc.musium.ui.screen.register.RegisterFragment"
         android:label="fragment_register"
         tools:layout="@layout/fragment_register" >
         <action
             android:id="@+id/action_registerFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
     </fragment>
-
         <fragment
             android:id="@+id/homeFragment"
-            android:name="com.jcxdc.musium.ui.screen.HomeFragment"
+            android:name="com.jcxdc.musium.ui.screen.home.HomeFragment"
             android:label="fragment_home"
             tools:layout="@layout/fragment_home" >
             <action
                 android:id="@+id/action_homeFragment_to_topArtistFragment"
-                app:destination="@id/topArtistFragment" />
+                app:destination="@id/topArtistFragment"
+                >
+
+            </action>
             <action
                 android:id="@+id/action_homeFragment_to_topTracksFragment"
                 app:destination="@id/topTracksFragment" />
             <action
                 android:id="@+id/action_homeFragment_to_playerFragment"
-                app:destination="@id/playerFragment" />
+                app:destination="@id/playerFragment"
+                app:enterAnim="@anim/slide_top"
+                app:exitAnim="@anim/wait"
+                app:popEnterAnim="@anim/wait"
+                app:popExitAnim="@anim/slide_bottom"/>
 
         </fragment>
 
     <fragment
         android:id="@+id/ExploreFragment"
-        android:name="com.jcxdc.musium.ui.screen.ExploreFragment"
+        android:name="com.jcxdc.musium.ui.screen.home.ExploreFragment"
         android:label="fragment_explore"
         tools:layout="@layout/fragment_explore" />
     <fragment
         android:id="@+id/libraryFragment"
-        android:name="com.jcxdc.musium.ui.screen.LibraryFragment"
+        android:name="com.jcxdc.musium.ui.screen.library.LibraryFragment"
         android:label="fragment_library"
         tools:layout="@layout/fragment_library" >
+
         <action
             android:id="@+id/action_libraryFragment_to_playerFragment"
-            app:destination="@id/playerFragment" />
+            app:destination="@id/playerFragment"
+            app:enterAnim="@anim/slide_top"
+            app:exitAnim="@anim/wait"
+            app:popEnterAnim="@anim/wait"
+            app:popExitAnim="@anim/slide_bottom"
+
+            />
     </fragment>
     <fragment
         android:id="@+id/topAlbumFragment"
@@ -86,12 +99,19 @@
         tools:layout="@layout/fragment_top_tracks" />
     <fragment
         android:id="@+id/playlistFragment"
-        android:name="com.jcxdc.musium.ui.screen.PlaylistFragment"
+        android:name="com.jcxdc.musium.ui.screen.playlist.PlaylistFragment"
         android:label="fragment_playlist"
-        tools:layout="@layout/fragment_playlist" />
+        tools:layout="@layout/fragment_playlist" >
+        <action
+            android:id="@+id/action_playlistFragment_to_playlistSongFragment"
+            app:destination="@id/playlistSongFragment" />
+        <action
+            android:id="@+id/action_playlistFragment_to_playerFragment"
+            app:destination="@id/playerFragment" />
+    </fragment>
     <fragment
         android:id="@+id/playerFragment"
-        android:name="com.jcxdc.musium.ui.screen.PlayerFragment"
+        android:name="com.jcxdc.musium.ui.screen.player.PlayerFragment"
         android:label="fragment_player"
         tools:layout="@layout/fragment_player" >
 
@@ -100,14 +120,39 @@
             android:name="isLocalMusic"
             app:argType="boolean"
             />
-        <argument
 
-            android:name="localAudio"
-            app:argType="integer" />
-        <argument
-
-            android:name="RemoteAudio"
-            app:argType="integer" />
     </fragment>
+    <fragment
+        android:id="@+id/localLibraryFragment"
+        android:name="com.jcxdc.musium.ui.screen.library.LocalLibraryFragment"
+        android:label="fragment_local_library"
+        tools:layout="@layout/fragment_local_library" >
+        <action
+            android:id="@+id/action_localLibraryFragment_to_playerFragment"
+            app:destination="@id/playerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/remoteLibraryFragment"
+        android:name="com.jcxdc.musium.ui.screen.library.RemoteLibraryFragment"
+        android:label="fragment_remote_library"
+        tools:layout="@layout/fragment_remote_library" />
+    <fragment
+        android:id="@+id/playlistSongFragment"
+        android:name="com.jcxdc.musium.ui.screen.playlistsong.PlaylistSongFragment"
+        android:label="fragment_playlist_song"
+        tools:layout="@layout/fragment_playlist_song" >
+        <argument
+            android:name="playlistId"
+            app:argType="integer"
+            />
+        <action
+            android:id="@+id/action_playlistSongFragment_to_playerFragment"
+            app:destination="@id/playerFragment"
+            app:enterAnim="@anim/slide_top"
+            app:exitAnim="@anim/wait"
+            app:popEnterAnim="@anim/wait"
+            app:popExitAnim="@anim/slide_bottom"/>
+    </fragment>
+
 
 </navigation>

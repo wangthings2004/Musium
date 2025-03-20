@@ -1,69 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="130dp"
+    android:layout_height="70dp"
     android:background="@drawable/cassette_head"
     android:padding="10dp"
     >
-
-
-    <TextView
-        android:id="@+id/tv_app_name"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Apero Music"
-        android:textColor="@android:color/white"
-        android:textSize="12sp" />
+        android:orientation="vertical"
+        android:layout_weight="1">
+        <TextView
 
-    <TextView
-        android:textStyle="bold"
-        android:id="@+id/tv_song_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_app_name"
-        android:text="Meo Meo meo m..."
-        android:maxLength="20"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"
-        android:maxLines="1"
-        android:ellipsize="end" />
+            android:textStyle="bold"
+            android:id="@+id/tv_song_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Meo Meo meo m..."
+            android:maxLength="20"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:maxLines="1"
+            android:ellipsize="end" />
 
-    <TextView
-        android:id="@+id/tv_artist_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_song_title"
-        android:text="TranDucBo"
-        android:textColor="@android:color/white"
-        android:textSize="12sp" />
+        <TextView
+            android:id="@+id/tv_artist_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_song_title"
+            android:text="TranDucBo"
+            android:textColor="@android:color/white"
+            android:textSize="10sp" />
+
+    </LinearLayout>
+
+
+
+
 
     <ImageView
+        android:layout_weight="1"
         android:id="@+id/iv_prev"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@id/tv_artist_name"
-        android:layout_marginTop="10dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center"
+
+
         android:src="@drawable/mback"
         android:contentDescription="Previous" />
 
     <ImageView
+        android:layout_weight="1"
         android:id="@+id/iv_play_pause"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/tv_artist_name"
-        android:layout_marginTop="10dp"
-        android:src="@drawable/play"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center"
+
+
+        android:src="@drawable/play_arrow"
         android:contentDescription="Play/Pause" />
 
     <ImageView
+        android:layout_weight="1"
         android:id="@+id/iv_next"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/tv_artist_name"
-        android:layout_marginTop="10dp"
+
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center"
+
         android:src="@drawable/mnext"
         android:contentDescription="Next" />
-</RelativeLayout>
+</LinearLayout>

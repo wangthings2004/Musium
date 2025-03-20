@@ -1,6 +1,7 @@
 package com.jcxdc.musium.db
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.jcxdc.musium.utils.Constants.USER_TABLE
 
@@ -12,3 +13,15 @@ data class UserEntity(
     var email : String?,
 
 )
+
+@Entity(tableName = "playlist_table",)
+data class Playlist(
+    @PrimaryKey(autoGenerate = true) var id: Int = 0,
+    var title: String,
+
+)
+
+
+
+
+

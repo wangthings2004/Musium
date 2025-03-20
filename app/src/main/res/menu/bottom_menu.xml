@@ -11,10 +11,10 @@
         android:title=''
         app:showAsAction="ifRoom"
         android:enabled="true"
-        android:icon="@drawable/library_music"/>
+        android:icon="@drawable/ic_library"/>
     <item android:id="@+id/playlistFragment"
         android:title=""
         app:showAsAction="ifRoom"
         android:enabled="true"
-        android:icon="@drawable/playlist"/>
+        android:icon="@drawable/ic_playlist"/>
 </menu>

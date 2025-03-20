@@ -4,8 +4,14 @@ import android.content.ContentResolver
 import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.jcxdc.musium.SongDataSource
+import com.jcxdc.musium.content_provider.SongDataSource
+import com.jcxdc.musium.db.PlaylistDao
+import com.jcxdc.musium.db.PlaylistDatabase
+import com.jcxdc.musium.db.SongDao
+import com.jcxdc.musium.db.SongDatabase
 import com.jcxdc.musium.model.api.APIServices
+import com.jcxdc.musium.model.repository.PlaylistRepository
+import com.jcxdc.musium.model.repository.SongRepository
 import com.jcxdc.musium.utils.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides
@@ -70,4 +76,37 @@ object AppModule {
     fun provideAPIServices(retrofit: Retrofit): APIServices {
         return retrofit.create(APIServices::class.java)
     }
+    @Provides
+    @Singleton
+    fun providePlaylistDatabase(@ApplicationContext context: Context): PlaylistDatabase {
+        return PlaylistDatabase.getInstance(context)
+    }
+
+    @Provides
+    fun providePlaylistDao(database: PlaylistDatabase): PlaylistDao {
+        return database.playlistDao()
+    }
+    @Provides
+    @Singleton
+    fun providePlaylistRepository(dao: PlaylistDao): PlaylistRepository {
+        return PlaylistRepository(dao)
+    }
+    @Provides
+    @Singleton
+    fun provideSongDatabase(@ApplicationContext context: Context): SongDatabase {
+        return SongDatabase.getInstance(context)
+    }
+
+    @Provides
+    fun provideSongDao(database: SongDatabase): SongDao {
+        return database.songDao()
+    }
+    @Provides
+    @Singleton
+    fun provideSongRepository(dao: SongDao): SongRepository {
+        return SongRepository(dao)
+    }
+
+
+
 }

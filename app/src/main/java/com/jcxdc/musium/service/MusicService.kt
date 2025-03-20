@@ -12,7 +12,7 @@ import android.os.IBinder
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import com.jcxdc.musium.R
-import com.jcxdc.musium.db.RemoteAudioItem
+import com.jcxdc.musium.db.AudioItem
 import com.jcxdc.musium.ui.viewmodel.LocalAudioViewModel
 import com.jcxdc.musium.ui.viewmodel.RemoteAudioViewModel
 
@@ -22,6 +22,10 @@ class MusicService : Service() {
     private val binder = MusicBinder()
     private var mediaPlayer: MediaPlayer? = null
     private var currentTrackIndex = -1
+    enum class AudioSource {
+        LOCAL, REMOTE, NONE
+    }
+    private var currentAudioSource: AudioSource = AudioSource.NONE
 
     inner class MusicBinder : Binder() {
         fun getService(): MusicService = this@MusicService
@@ -55,17 +59,24 @@ class MusicService : Service() {
             manager?.createNotificationChannel(channel)
         }
     }
+    fun isPlayingLocal(): Boolean {
+        return currentAudioSource == AudioSource.LOCAL
+    }
+
     fun playLocalTrack(localAudioViewModel: LocalAudioViewModel) {
         val localItem = localAudioViewModel.getCurrentAudioItem()
-        mediaPlayer?.release()
-        mediaPlayer = MediaPlayer().apply {
-            setDataSource(localItem?.path)
-            prepare()
-            start()
+        if (localItem != null && (currentTrackIndex != localAudioViewModel.currentAudioIndex.value || mediaPlayer == null)) {
+            mediaPlayer?.release()
+            mediaPlayer = MediaPlayer().apply {
+                setDataSource(localItem.path)
+                prepare()
+                start()
+            }
+            currentTrackIndex = localAudioViewModel.currentAudioIndex.value ?: -1
+            currentAudioSource = AudioSource.LOCAL
+            showNotification(localAudioItem = localItem, null)
+
         }
-        showNotification(localAudioItem = localItem,null)
-
-
     }
     fun playTrack(remoteAudioViewModel: RemoteAudioViewModel) {
         val audioItem = remoteAudioViewModel.getCurrentAudioItem()
@@ -77,14 +88,19 @@ class MusicService : Service() {
                 start()
             }
             currentTrackIndex = remoteAudioViewModel.currentAudioIndex.value ?: -1
+            currentAudioSource = AudioSource.REMOTE
             showNotification(null, remoteAudioItem = audioItem)
         }
     }
     fun setLocalAudioViewModel(localAudioViewModel: LocalAudioViewModel?) {
         this.localAudioViewModel = localAudioViewModel
+        remoteAudioViewModel?.deselectCurrentAudio()
+
     }
     fun setRemoteAudioViewModel(remoteAudioViewModel: RemoteAudioViewModel?) {
         this.remoteAudioViewModel = remoteAudioViewModel
+        localAudioViewModel?.deselectCurrentAudio()
+
     }
     fun nextRemoteAudioTrack(){
         remoteAudioViewModel?.nextAudio()
@@ -128,7 +144,7 @@ class MusicService : Service() {
         mediaPlayer?.seekTo(position)
     }
 
-    private fun showNotification(localAudioItem: RemoteAudioItem?, remoteAudioItem: RemoteAudioItem?) {
+    private fun showNotification(localAudioItem: AudioItem?, remoteAudioItem: AudioItem?) {
         val audioItem = localAudioItem ?: remoteAudioItem
         val isLocal = localAudioItem != null
 
@@ -162,7 +178,7 @@ class MusicService : Service() {
             notificationLayout.setOnClickPendingIntent(R.id.iv_next, nextIntent)
 
             val notification = NotificationCompat.Builder(this, "music_channel")
-                .setSmallIcon(R.drawable.cassette_head)
+                .setSmallIcon(R.drawable.img_logo)
                 .setContent(notificationLayout)
                 .setStyle(NotificationCompat.DecoratedCustomViewStyle())
                 .setOnlyAlertOnce(true)
@@ -205,9 +221,13 @@ class MusicService : Service() {
         return START_STICKY
     }
 
-
+    fun stopMusicService() {
+        stopForeground(true) // Xóa notification
+        stopSelf() // Dừng service
+    }
 
     override fun onDestroy() {
+        stopMusicService()
         mediaPlayer?.release()
         mediaPlayer = null
         super.onDestroy()

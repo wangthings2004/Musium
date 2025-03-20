@@ -1,3 +1,3 @@
 package com.jcxdc.musium.db
 
-class RemoteAudio : ArrayList<RemoteAudioItem>()
+class RemoteAudio : ArrayList<AudioItem>()

@@ -1,7 +1,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.screen.PlayerFragment">
+    tools:context=".ui.screen.player.PlayerFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -40,7 +40,7 @@
             android:src="@drawable/close"/>
 
         <ImageView
-            android:src="@drawable/cassette_head"
+
             android:id="@+id/ivMusicImage"
             android:layout_width="match_parent"
             android:layout_height="330dp"
@@ -133,7 +133,7 @@
                 android:background="@drawable/play_round_gradient"
                 android:padding="12dp"
 
-                android:src="@drawable/pause" />
+                 />
 
             <ImageView
                 android:id="@+id/ivNext"
