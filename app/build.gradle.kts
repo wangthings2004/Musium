@@ -47,7 +47,12 @@ android {
 }
 
 dependencies {
-
+    // Koin core
+    implementation (libs.koin.core)
+// Koin cho Android
+    implementation (libs.koin.android)
+// Koin cho ViewModel (nếu dùng)
+    implementation (libs.koin.androidx.viewmodel)
     // Hilt
     implementation ("com.google.dagger:hilt-android:2.52")
     implementation(libs.androidx.preference)

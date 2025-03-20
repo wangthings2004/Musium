@@ -39,7 +39,7 @@ class LocalAudioViewModel @Inject constructor(
     fun getSelectedAudio(): AudioItem? {
         return _localAudios.value?.find { it.isSelected }
     }
-    private fun loadLocalAudios() {
+    fun loadLocalAudios() {
 
         _localAudios.value = songDataSource.getAllAudio()
     }

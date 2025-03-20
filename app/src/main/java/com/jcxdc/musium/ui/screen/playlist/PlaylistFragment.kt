@@ -1,6 +1,7 @@
 package com.jcxdc.musium.ui.screen.playlist
 
 import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,10 +19,13 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.jcxdc.musium.ui.screen.BottomViewNavigationListener
+import com.jcxdc.musium.ui.screen.MainActivity
+import com.jcxdc.musium.ui.screen.home.HomeFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class PlaylistFragment : Fragment() {
+class PlaylistFragment : Fragment(), BottomViewNavigationListener {
     private lateinit var binding: FragmentPlaylistBinding
     private val playlistViewModel: PlaylistViewModel by viewModels()
     private lateinit var playlistAdapter: PlaylistAdapter
@@ -95,10 +99,30 @@ class PlaylistFragment : Fragment() {
                 }
                 dialog.dismiss()
             } else {
-
                 Toast.makeText(context, "Please enter a title", Toast.LENGTH_SHORT).show()
             }
         }
         dialog.show()
+    }
+
+    override fun navigateToPlayer() {
+        (requireActivity() as? MainActivity)?.let { activity ->
+            val musicService = activity.musicService
+            val isLocal = musicService?.isPlayingLocal() ?: false
+            val action = PlaylistFragmentDirections.actionPlaylistFragmentToPlayerFragment(isLocal)
+            findNavController().navigate(action)
+        }
+
+    }
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is MainActivity) {
+            context.setBottomViewNavigationListener(this)
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        (requireActivity() as? MainActivity)?.setBottomViewNavigationListener(null)
     }
 }

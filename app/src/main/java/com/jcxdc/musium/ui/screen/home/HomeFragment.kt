@@ -7,6 +7,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -43,7 +45,12 @@ class HomeFragment : Fragment(), BottomViewNavigationListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                isEnabled = false
+                requireActivity().finish()
+            }
+        })
         setupRecyclerView()
         remoteAudioViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.pbLoading.visibility = if (isLoading) View.VISIBLE else View.GONE
@@ -103,29 +110,18 @@ class HomeFragment : Fragment(), BottomViewNavigationListener {
                 }
             }
         }
-        binding.rvTopArtists.apply {
-            layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
-            adapter = topArtistAdapter
-            topAlbumAdapter.onItemClick = { audioItem ->
-                val index = remoteAudioViewModel.remoteAudios.value?.indexOf(audioItem) ?: 0
-                remoteAudioViewModel.setCurrentAudioIndex(index)
-                (requireActivity() as? MainActivity)?.let { activity ->
-                    val musicService = activity.musicService
-                    if (musicService != null) {
-                        musicService.setRemoteAudioViewModel(remoteAudioViewModel)
-                        musicService.playTrack(remoteAudioViewModel)
-                        activity.showBottomView()
-                        activity.updateBottomViewTitle(audioItem.title,formatTime(audioItem.duration))
-                    }
-                }
-            }
 
-        }
+
     }
 
     override fun navigateToPlayer() {
-        val action = HomeFragmentDirections.actionHomeFragmentToPlayerFragment(false)
-        findNavController().navigate(action)
+        (requireActivity() as? MainActivity)?.let { activity ->
+            val musicService = activity.musicService
+            val isLocal = musicService?.isPlayingLocal() ?: false
+            val action = HomeFragmentDirections.actionHomeFragmentToPlayerFragment(isLocal)
+            findNavController().navigate(action)
+        }
+
     }
     override fun onAttach(context: Context) {
         super.onAttach(context)

@@ -10,7 +10,7 @@ class ViewPagerAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapte
     override fun createFragment(position: Int): Fragment {
         return when (position) {
             0 -> LocalLibraryFragment()
-            1 -> RemoteLibraryFragment()
+
             else -> throw IllegalStateException("Invalid position $position")
         }
     }

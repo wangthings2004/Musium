@@ -58,6 +58,7 @@ class LocalLibraryFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
+        localAudioViewModel.loadLocalAudios()
         localMusicAdapter = LocalMusicAdapter()
         binding.rvLocalLibrary.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)

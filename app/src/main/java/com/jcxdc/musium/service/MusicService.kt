@@ -22,6 +22,10 @@ class MusicService : Service() {
     private val binder = MusicBinder()
     private var mediaPlayer: MediaPlayer? = null
     private var currentTrackIndex = -1
+    enum class AudioSource {
+        LOCAL, REMOTE, NONE
+    }
+    private var currentAudioSource: AudioSource = AudioSource.NONE
 
     inner class MusicBinder : Binder() {
         fun getService(): MusicService = this@MusicService
@@ -55,6 +59,10 @@ class MusicService : Service() {
             manager?.createNotificationChannel(channel)
         }
     }
+    fun isPlayingLocal(): Boolean {
+        return currentAudioSource == AudioSource.LOCAL
+    }
+
     fun playLocalTrack(localAudioViewModel: LocalAudioViewModel) {
         val localItem = localAudioViewModel.getCurrentAudioItem()
         if (localItem != null && (currentTrackIndex != localAudioViewModel.currentAudioIndex.value || mediaPlayer == null)) {
@@ -65,7 +73,9 @@ class MusicService : Service() {
                 start()
             }
             currentTrackIndex = localAudioViewModel.currentAudioIndex.value ?: -1
+            currentAudioSource = AudioSource.LOCAL
             showNotification(localAudioItem = localItem, null)
+
         }
     }
     fun playTrack(remoteAudioViewModel: RemoteAudioViewModel) {
@@ -78,6 +88,7 @@ class MusicService : Service() {
                 start()
             }
             currentTrackIndex = remoteAudioViewModel.currentAudioIndex.value ?: -1
+            currentAudioSource = AudioSource.REMOTE
             showNotification(null, remoteAudioItem = audioItem)
         }
     }
@@ -167,7 +178,7 @@ class MusicService : Service() {
             notificationLayout.setOnClickPendingIntent(R.id.iv_next, nextIntent)
 
             val notification = NotificationCompat.Builder(this, "music_channel")
-                .setSmallIcon(R.drawable.cassette_head)
+                .setSmallIcon(R.drawable.img_logo)
                 .setContent(notificationLayout)
                 .setStyle(NotificationCompat.DecoratedCustomViewStyle())
                 .setOnlyAlertOnce(true)

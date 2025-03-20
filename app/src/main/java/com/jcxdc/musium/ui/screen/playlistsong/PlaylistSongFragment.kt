@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.jcxdc.musium.R
 import com.jcxdc.musium.databinding.FragmentPlaylistSongBinding
 import com.jcxdc.musium.ui.screen.BottomViewNavigationListener
+import com.jcxdc.musium.ui.screen.home.HomeFragmentDirections
 import com.jcxdc.musium.ui.viewmodel.LocalAudioViewModel
 import com.jcxdc.musium.ui.viewmodel.SongViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -99,8 +100,14 @@ class PlaylistSongFragment : Fragment(), BottomViewNavigationListener {
     }
 
     override fun navigateToPlayer() {
-        val action = PlaylistSongFragmentDirections.actionPlaylistSongFragmentToPlayerFragment(isLocalMusic = true)
-        findNavController().navigate(action)
+        (requireActivity() as? MainActivity)?.let { activity ->
+            val musicService = activity.musicService
+            val isLocal = musicService?.isPlayingLocal() ?: false
+            val action =
+                PlaylistSongFragmentDirections.actionPlaylistSongFragmentToPlayerFragment(isLocal)
+            findNavController().navigate(action)
+        }
+
     }
     override fun onAttach(context: Context) {
         super.onAttach(context)

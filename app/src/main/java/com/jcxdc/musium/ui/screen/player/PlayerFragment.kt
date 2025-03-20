@@ -126,7 +126,6 @@ class PlayerFragment : Fragment() {
                 binding.ivMusicImage.setBackgroundResource(R.drawable.img_library1)
                 (activity as? MainActivity)?.updateBottomViewTitle(audioItem.title, formatTime(audioItem.duration))
 
-                // Phát bài hát mới
                 musicService?.playLocalTrack(localAudioViewModel)
                 updateSeekBar()
             }

@@ -105,6 +105,9 @@
         <action
             android:id="@+id/action_playlistFragment_to_playlistSongFragment"
             app:destination="@id/playlistSongFragment" />
+        <action
+            android:id="@+id/action_playlistFragment_to_playerFragment"
+            app:destination="@id/playerFragment" />
     </fragment>
     <fragment
         android:id="@+id/playerFragment"

@@ -55,7 +55,9 @@ class RegisterFragment : Fragment() {
                 }
             }
         }
-
+        binding.ivBack.setOnClickListener{
+            findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
+        }
         return binding.root
     }
 

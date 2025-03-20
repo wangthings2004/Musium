@@ -58,6 +58,28 @@ class LoginFragment : Fragment() {
             }
         }
 
+        // Đặt icon mặc định khi vào màn hình (ẩn mật khẩu, icon mắt gạch)
+        binding.edtPass.transformationMethod = android.text.method.PasswordTransformationMethod.getInstance()
+        binding.textInputLayoutPassword.isEndIconVisible = true
+        binding.textInputLayoutPassword.endIconDrawable = resources.getDrawable(R.drawable.ic_eye_closed, null)
+
+// Xử lý khi nhấn vào icon mắt
+        binding.textInputLayoutPassword.setEndIconOnClickListener {
+            if (binding.edtPass.transformationMethod == android.text.method.PasswordTransformationMethod.getInstance()) {
+                // Nếu mật khẩu đang ẩn → Hiện mật khẩu + đổi icon mắt mở
+                binding.edtPass.transformationMethod = null
+                binding.textInputLayoutPassword.endIconDrawable = resources.getDrawable(R.drawable.ic_eye_open, null)
+            } else {
+                // Nếu mật khẩu đang hiển thị → Ẩn mật khẩu + đổi icon mắt gạch
+                binding.edtPass.transformationMethod = android.text.method.PasswordTransformationMethod.getInstance()
+                binding.textInputLayoutPassword.endIconDrawable = resources.getDrawable(R.drawable.ic_eye_closed, null)
+            }
+        }
+
+
+
+
+
         return binding.root
     }
 

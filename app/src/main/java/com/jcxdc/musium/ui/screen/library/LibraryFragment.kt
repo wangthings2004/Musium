@@ -16,6 +16,7 @@ import com.jcxdc.musium.R
 import com.jcxdc.musium.content_provider.SongDataSource
 import com.jcxdc.musium.ui.screen.BottomViewNavigationListener
 import com.jcxdc.musium.ui.screen.MainActivity
+import com.jcxdc.musium.ui.screen.home.HomeFragmentDirections
 
 import com.jcxdc.musium.ui.viewmodel.LocalAudioViewModel
 
@@ -33,6 +34,7 @@ class LibraryFragment : Fragment(), BottomViewNavigationListener {
         songDataSource = SongDataSource(requireContext().contentResolver)
         localMusicAdapter = LocalMusicAdapter()
         setupTabLayout()
+
         return binding.root
 
     }
@@ -68,8 +70,13 @@ class LibraryFragment : Fragment(), BottomViewNavigationListener {
 
     }
     override fun navigateToPlayer() {
-        val action = LibraryFragmentDirections.actionLibraryFragmentToPlayerFragment(isLocalMusic = true)
-        findNavController().navigate(action)
+
+        (requireActivity() as? MainActivity)?.let { activity ->
+            val musicService = activity.musicService
+            val isLocal = musicService?.isPlayingLocal() ?: false
+            val action = LibraryFragmentDirections.actionLibraryFragmentToPlayerFragment(isLocal)
+            findNavController().navigate(action)
+        }
     }
     override fun onAttach(context: Context) {
         super.onAttach(context)
