@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("kotlin-kapt")
-    id("dagger.hilt.android.plugin")
     id("androidx.navigation.safeargs.kotlin")
     id ("kotlin-parcelize")
 
@@ -52,11 +51,11 @@ dependencies {
 // Koin cho Android
     implementation (libs.koin.android)
 // Koin cho ViewModel (nếu dùng)
-    implementation (libs.koin.androidx.viewmodel)
-    // Hilt
-    implementation ("com.google.dagger:hilt-android:2.52")
+
+    implementation(libs.koin.android.v322)
+
     implementation(libs.androidx.preference)
-    kapt ("com.google.dagger:hilt-compiler:2.52")
+
 
 // Retrofit
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
@@ -77,9 +76,7 @@ dependencies {
 
 
 
-    // Koin
-    implementation("io.insert-koin:koin-core:3.2.2")
-    implementation("io.insert-koin:koin-android:3.2.2")
+
 
     // Room
     implementation("androidx.room:room-runtime:2.6.1")

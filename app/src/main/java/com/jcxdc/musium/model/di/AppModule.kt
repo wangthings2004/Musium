@@ -24,89 +24,53 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
-@Module
-@InstallIn(SingletonComponent::class)
-object AppModule {
-    @Provides
-    @Singleton
-    fun provideContentResolver(@ApplicationContext context: Context): ContentResolver {
-        return context.contentResolver
-    }
-    @Provides
-    @Singleton
-    fun provideSongDataSource(contentResolver: ContentResolver): SongDataSource {
-        return SongDataSource(contentResolver)
-    }
-    @Provides
-    @Singleton
-    fun provideBaseUrl() = BASE_URL
+val appModule = module {
+    single { (context: Context) -> context.contentResolver }
+    single { SongDataSource(get()) }
+    single { BASE_URL }
+    single { GsonBuilder().setLenient().create() }
 
-    @Provides
-    @Singleton
-    fun provideGson(): Gson = GsonBuilder().setLenient().create()
-
-    @Provides
-    @Singleton
-    fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
-        return HttpLoggingInterceptor().apply {
+    // Thêm HttpLoggingInterceptor vào Koin
+    single {
+        HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
     }
 
-    @Provides
-    @Singleton
-    fun provideOkHttpClient(interceptor: HttpLoggingInterceptor): OkHttpClient {
-        return OkHttpClient.Builder()
-            .addInterceptor(interceptor)
+    // Khởi tạo OkHttpClient
+    single {
+        OkHttpClient.Builder()
+            .addInterceptor(get<HttpLoggingInterceptor>())
             .build()
     }
 
-    @Provides
-    @Singleton
-    fun provideRetrofit(gson: Gson, okHttpClient: OkHttpClient): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(provideBaseUrl())
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create(gson))
+    single {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(get())
+            .addConverterFactory(GsonConverterFactory.create(get()))
             .build()
     }
 
-    @Provides
-    @Singleton
-    fun provideAPIServices(retrofit: Retrofit): APIServices {
-        return retrofit.create(APIServices::class.java)
-    }
-    @Provides
-    @Singleton
-    fun providePlaylistDatabase(@ApplicationContext context: Context): PlaylistDatabase {
-        return PlaylistDatabase.getInstance(context)
-    }
+    single { get<Retrofit>().create(APIServices::class.java) }
+    single { APIRepository(get()) }
+    single { PlaylistDatabase.getInstance(get()) }
+    single { get<PlaylistDatabase>().playlistDao() }
+    single { PlaylistRepository(get()) }
+    single { SongDatabase.getInstance(get()) }
+    single { get<SongDatabase>().songDao() }
+    single { SongRepository(get()) }
 
-    @Provides
-    fun providePlaylistDao(database: PlaylistDatabase): PlaylistDao {
-        return database.playlistDao()
-    }
-    @Provides
-    @Singleton
-    fun providePlaylistRepository(dao: PlaylistDao): PlaylistRepository {
-        return PlaylistRepository(dao)
-    }
-    @Provides
-    @Singleton
-    fun provideSongDatabase(@ApplicationContext context: Context): SongDatabase {
-        return SongDatabase.getInstance(context)
-    }
+    viewModel { RemoteAudioViewModel(get()) }
+    single { RemoteAudioAdapter() }
+    single { PlaylistAdapter() }
+    single { TopAlbumAdapter() }
 
-    @Provides
-    fun provideSongDao(database: SongDatabase): SongDao {
-        return database.songDao()
-    }
-    @Provides
-    @Singleton
-    fun provideSongRepository(dao: SongDao): SongRepository {
-        return SongRepository(dao)
-    }
+    viewModel { PlaylistViewModel(get()) }
+    viewModel { SongViewModel(get()) }
+    viewModel { LocalAudioViewModel(get()) }
 
-
-
+    single { LocalMusicAdapter() }
+    single { AddPlaylistAdapter() }
 }
+
