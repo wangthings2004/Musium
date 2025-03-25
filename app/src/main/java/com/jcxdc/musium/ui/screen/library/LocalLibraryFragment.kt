@@ -25,24 +25,23 @@ import com.jcxdc.musium.R
 import com.jcxdc.musium.db.AudioItem
 import com.jcxdc.musium.ui.screen.MainActivity
 import com.jcxdc.musium.ui.viewmodel.SongViewModel
-import dagger.hilt.android.AndroidEntryPoint
+import org.koin.android.ext.android.inject
 
 
-@AndroidEntryPoint
 class LocalLibraryFragment : Fragment() {
     private lateinit var binding: FragmentLocalLibraryBinding
-    private lateinit var localMusicAdapter: LocalMusicAdapter
-    private lateinit var addPlaylistAdapter: AddPlaylistAdapter
-    private val localAudioViewModel: LocalAudioViewModel by viewModels({ requireActivity() })
-    private val playlistViewModel: PlaylistViewModel by viewModels()
-    private val songViewModel: SongViewModel by viewModels()
+    private val localMusicAdapter: LocalMusicAdapter by inject()
+    private val addPlaylistAdapter: AddPlaylistAdapter by inject()
+    private val localAudioViewModel: LocalAudioViewModel by inject()
+    private val playlistViewModel: PlaylistViewModel by inject()
+    private val songViewModel: SongViewModel by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentLocalLibraryBinding.inflate(inflater, container, false)
-        addPlaylistAdapter = AddPlaylistAdapter()
+
         setupRecyclerView()
         observeViewModels()
         loadLocalMusic()
@@ -59,7 +58,7 @@ class LocalLibraryFragment : Fragment() {
 
     private fun setupRecyclerView() {
         localAudioViewModel.loadLocalAudios()
-        localMusicAdapter = LocalMusicAdapter()
+
         binding.rvLocalLibrary.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = localMusicAdapter

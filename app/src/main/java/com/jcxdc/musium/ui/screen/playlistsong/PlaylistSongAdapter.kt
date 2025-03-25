@@ -12,9 +12,8 @@ import com.jcxdc.musium.R
 import com.jcxdc.musium.databinding.ItemLocalMusicBinding
 import com.jcxdc.musium.db.AudioItem
 
-import javax.inject.Inject
 
-class PlaylistSongAdapter @Inject constructor() :
+class PlaylistSongAdapter:
     ListAdapter<AudioItem, PlaylistSongAdapter.PlaylistSongViewHolder>(PlaylistDiffCallback) {
 
     var onItemClick: ((AudioItem) -> Unit)? = null
@@ -67,6 +66,7 @@ class PlaylistSongAdapter @Inject constructor() :
         popupMenu.setForceShowIcon(true)
         popupMenu.show()
     }
+    @SuppressLint("DefaultLocale")
     private fun formatTime(ms: Int): String {
         val minutes = ms / 1000 / 60
         val seconds = (ms / 1000) % 60

@@ -10,9 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jcxdc.musium.R
 import com.jcxdc.musium.databinding.ItemPlaylistBinding
 import com.jcxdc.musium.db.Playlist
-import javax.inject.Inject
 
-class PlaylistAdapter @Inject constructor() :
+class PlaylistAdapter:
     ListAdapter<Playlist, PlaylistAdapter.PlaylistViewHolder>(PlaylistDiffCallback) {
 
     var onItemClick: ((Playlist) -> Unit)? = null

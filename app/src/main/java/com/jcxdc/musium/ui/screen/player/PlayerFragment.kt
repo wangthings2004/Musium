@@ -4,7 +4,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
-
 import android.os.*
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,24 +15,23 @@ import androidx.activity.OnBackPressedCallback
 
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.jcxdc.musium.R
-
 import com.jcxdc.musium.databinding.FragmentPlayerBinding
-
 import com.jcxdc.musium.service.MusicService
 import com.jcxdc.musium.ui.screen.MainActivity
 import com.jcxdc.musium.ui.viewmodel.LocalAudioViewModel
 import com.jcxdc.musium.ui.viewmodel.RemoteAudioViewModel
-import dagger.hilt.android.AndroidEntryPoint
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-@AndroidEntryPoint
+
 class PlayerFragment : Fragment() {
     private lateinit var binding: FragmentPlayerBinding
-    private val remoteAudioViewModel: RemoteAudioViewModel by viewModels({ requireActivity() })
-    private val localAudioViewModel: LocalAudioViewModel by viewModels({ requireActivity() })
+    private val remoteAudioViewModel: RemoteAudioViewModel by sharedViewModel()
+    private val localAudioViewModel: LocalAudioViewModel by inject()
     private val args: PlayerFragmentArgs by navArgs()
     private var musicService: MusicService? = null
     private var isServiceBound = false
@@ -132,16 +130,17 @@ class PlayerFragment : Fragment() {
         }
     }
     private fun observeRemoteAudio() {
-        val audioItem = remoteAudioViewModel.getCurrentAudioItem()
-        binding.ivMusicImage.setBackgroundResource(img[remoteAudioViewModel.currentAudioIndex.value!! % img.size])
-        (activity as? MainActivity)?.updateBottomViewTitle(audioItem!!.title,formatTime(audioItem!!.duration))
         remoteAudioViewModel.currentAudioIndex.observe(viewLifecycleOwner) {
-            val audioItem = remoteAudioViewModel.getCurrentAudioItem()
-            audioItem?.let { item ->
-                binding.tvTitle.text = item.title
-                binding.tvArtistName.text = item.artist
+            val audioItem = remoteAudioViewModel.remoteAudios.value?.getOrNull(it)
+            if (audioItem != null) {
+                binding.tvTitle.text = audioItem.title
+                binding.tvArtistName.text = audioItem.artist
+                binding.ivMusicImage.setBackgroundResource(img[remoteAudioViewModel.currentAudioIndex.value!! % img.size])
+                (activity as? MainActivity)?.updateBottomViewTitle(audioItem.title, formatTime(audioItem.duration))
                 musicService?.playTrack(remoteAudioViewModel)
                 updateSeekBar()
+            } else {
+                Log.e("PlayerFragment", "No audio item available")
             }
         }
     }

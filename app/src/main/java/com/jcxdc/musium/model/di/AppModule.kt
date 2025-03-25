@@ -10,34 +10,45 @@ import com.jcxdc.musium.db.PlaylistDatabase
 import com.jcxdc.musium.db.SongDao
 import com.jcxdc.musium.db.SongDatabase
 import com.jcxdc.musium.model.api.APIServices
+import com.jcxdc.musium.model.repository.APIRepository
 import com.jcxdc.musium.model.repository.PlaylistRepository
 import com.jcxdc.musium.model.repository.SongRepository
+import com.jcxdc.musium.ui.screen.home.RemoteAudioAdapter
+import com.jcxdc.musium.ui.screen.home.TopAlbumAdapter
+import com.jcxdc.musium.ui.screen.library.AddPlaylistAdapter
+import com.jcxdc.musium.ui.screen.library.LocalMusicAdapter
+import com.jcxdc.musium.ui.screen.playlist.PlaylistAdapter
+import com.jcxdc.musium.ui.viewmodel.LocalAudioViewModel
+import com.jcxdc.musium.ui.viewmodel.PlaylistViewModel
+import com.jcxdc.musium.ui.viewmodel.RemoteAudioViewModel
+import com.jcxdc.musium.ui.viewmodel.SongViewModel
 import com.jcxdc.musium.utils.Constants.BASE_URL
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
+
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Singleton
+
 
 val appModule = module {
-    single { (context: Context) -> context.contentResolver }
+
+    single { androidContext().contentResolver }
+
     single { SongDataSource(get()) }
     single { BASE_URL }
     single { GsonBuilder().setLenient().create() }
 
-    // Thêm HttpLoggingInterceptor vào Koin
+
     single {
         HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
     }
 
-    // Khởi tạo OkHttpClient
+
     single {
         OkHttpClient.Builder()
             .addInterceptor(get<HttpLoggingInterceptor>())

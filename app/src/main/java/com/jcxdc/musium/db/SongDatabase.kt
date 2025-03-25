@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [AudioItem::class], version = 2) // Cập nhật version từ 1 lên 2
+@Database(entities = [AudioItem::class], version = 2)
 abstract class SongDatabase : RoomDatabase() {
     abstract fun songDao(): SongDao
 

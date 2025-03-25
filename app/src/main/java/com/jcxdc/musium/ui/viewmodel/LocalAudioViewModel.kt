@@ -5,12 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.jcxdc.musium.content_provider.SongDataSource
 import com.jcxdc.musium.db.AudioItem
-import dagger.hilt.android.lifecycle.HiltViewModel
 
-import javax.inject.Inject
 
-@HiltViewModel
-class LocalAudioViewModel @Inject constructor(
+class LocalAudioViewModel(
     private val songDataSource: SongDataSource
 ) : ViewModel() {
 

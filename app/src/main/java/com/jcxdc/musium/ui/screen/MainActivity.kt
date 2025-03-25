@@ -19,9 +19,9 @@ import androidx.navigation.fragment.NavHostFragment
 import com.jcxdc.musium.R
 import com.jcxdc.musium.databinding.ActivityMainBinding
 import com.jcxdc.musium.service.MusicService
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
+
+
 class MainActivity : AppCompatActivity() {
     private var bottomViewNavigationListener: BottomViewNavigationListener? = null
 

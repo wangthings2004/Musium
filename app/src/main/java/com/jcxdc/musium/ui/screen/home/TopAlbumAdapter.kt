@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.jcxdc.musium.databinding.ItemTopAlbumBinding
 import com.jcxdc.musium.db.AudioItem
-import javax.inject.Inject
 
-class TopAlbumAdapter @Inject constructor() :
+
+class TopAlbumAdapter  :
     ListAdapter<AudioItem, TopAlbumAdapter.TopAlbumViewHolder>(AudioDiffCallback) {
     var onItemClick: ((AudioItem) -> Unit)? = null
 

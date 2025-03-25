@@ -19,13 +19,14 @@ import com.jcxdc.musium.ui.screen.MainActivity
 import com.jcxdc.musium.ui.screen.home.HomeFragmentDirections
 
 import com.jcxdc.musium.ui.viewmodel.LocalAudioViewModel
+import org.koin.android.ext.android.inject
 
 
 class LibraryFragment : Fragment(), BottomViewNavigationListener {
     lateinit var binding : FragmentLibraryBinding
     lateinit var songDataSource: SongDataSource
     lateinit var localMusicAdapter: LocalMusicAdapter
-    private val localAudioViewModel: LocalAudioViewModel by viewModels({ requireActivity() })
+    private val localAudioViewModel: LocalAudioViewModel by inject()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

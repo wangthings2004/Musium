@@ -15,18 +15,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.jcxdc.musium.R
 import com.jcxdc.musium.databinding.FragmentPlaylistSongBinding
 import com.jcxdc.musium.ui.screen.BottomViewNavigationListener
-import com.jcxdc.musium.ui.screen.home.HomeFragmentDirections
+
 import com.jcxdc.musium.ui.viewmodel.LocalAudioViewModel
 import com.jcxdc.musium.ui.viewmodel.SongViewModel
-import dagger.hilt.android.AndroidEntryPoint
+import org.koin.android.ext.android.inject
 
-@AndroidEntryPoint
 class PlaylistSongFragment : Fragment(), BottomViewNavigationListener {
 
     private lateinit var binding: FragmentPlaylistSongBinding
     private lateinit var playlistSongAdapter: PlaylistSongAdapter
-    private val localAudioViewModel: LocalAudioViewModel by viewModels({ requireActivity() })
-    private val songViewModel: SongViewModel by viewModels()
+    private val localAudioViewModel: LocalAudioViewModel by inject()
+    private val songViewModel: SongViewModel by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
