@@ -19,6 +19,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.jcxdc.musium.service.MusicService
 import com.jcxdc.musium.ui.screen.BottomViewNavigationListener
 import com.jcxdc.musium.ui.screen.MainActivity
 import org.koin.android.ext.android.inject
@@ -107,7 +108,8 @@ class PlaylistFragment : Fragment(), BottomViewNavigationListener {
     override fun navigateToPlayer() {
         (requireActivity() as? MainActivity)?.let { activity ->
             val musicService = activity.musicService
-            val isLocal = musicService?.isPlayingLocal() ?: false
+            val sourceType = musicService?.getCurrentSourceType() ?: MusicService.SourceType.NONE
+            val isLocal = sourceType == MusicService.SourceType.LOCAL
             val action = PlaylistFragmentDirections.actionPlaylistFragmentToPlayerFragment(isLocal)
             findNavController().navigate(action)
         }

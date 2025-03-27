@@ -137,19 +137,19 @@ class MainActivity : AppCompatActivity() {
         }
         binding.ivCloseBottomView.setOnClickListener{
             binding.rlBottomView.visibility = View.GONE
-            musicService?.stopTrack()
-            musicService?.stopMusicService()
+            musicService?.stop()
+
         }
         binding.ivPlay.setOnClickListener {
             togglePlayPause()
         }
     }
     private fun togglePlayPause() {
-        if (musicService?.isPlaying() == true) {
-            musicService?.pauseTrack()
+        if (musicService?.getPlaybackState()?.isPlaying == true) {
+            musicService?.pause()
             binding.ivPlay.setImageResource(R.drawable.play)
         } else {
-            musicService?.resumeTrack()
+            musicService?.resume()
             binding.ivPlay.setImageResource(R.drawable.pause)
         }
     }

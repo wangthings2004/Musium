@@ -5,66 +5,68 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.jcxdc.musium.content_provider.SongDataSource
 import com.jcxdc.musium.db.AudioItem
-
+import com.jcxdc.musium.service.AudioSource
 
 class LocalAudioViewModel(
     private val songDataSource: SongDataSource
-) : ViewModel() {
+) : ViewModel(), AudioSource {
 
-    private val _localAudios = MutableLiveData<List<AudioItem>>()
+    private val _localAudios = MutableLiveData<List<AudioItem>>(emptyList())
     val localAudios: LiveData<List<AudioItem>> = _localAudios
 
-    private val _currentAudioIndex = MutableLiveData<Int>()
+    private val _currentAudioIndex = MutableLiveData<Int>(-1)
     val currentAudioIndex: LiveData<Int> = _currentAudioIndex
-    private val _selectedAudio = MutableLiveData<AudioItem?>()
-    val selectedAudio: LiveData<AudioItem?> = _selectedAudio
 
-    fun selectAudio(index: Int) {
-        _localAudios.value = _localAudios.value?.mapIndexed { i, audioItem ->
-            audioItem.copy(isSelected = i == index)
-        }
-        setCurrentAudioIndex(index)
-        _selectedAudio.value = _localAudios.value?.get(index)
-    }
     init {
         loadLocalAudios()
     }
-    fun deselectCurrentAudio() {
-        _selectedAudio.value?.isSelected = false
-    }
 
-    fun getSelectedAudio(): AudioItem? {
-        return _localAudios.value?.find { it.isSelected }
-    }
-    fun loadLocalAudios() {
-
+    // Load danh sách bài hát local
+    private fun loadLocalAudios() {
         _localAudios.value = songDataSource.getAllAudio()
+        if (_localAudios.value?.isNotEmpty() == true && _currentAudioIndex.value == -1) {
+            setCurrentAudioIndex(0) // Chọn bài đầu tiên mặc định
+        }
     }
 
-    fun setCurrentAudioIndex(index: Int) {
+    // Chọn bài hát theo index
+    fun selectAudio(index: Int) {
+        if (index >= 0 && index < (_localAudios.value?.size ?: 0)) {
+            setCurrentAudioIndex(index)
+        }
+    }
+
+    // Đặt index hiện tại
+    private fun setCurrentAudioIndex(index: Int) {
         _currentAudioIndex.value = index
     }
 
-    fun nextAudio() {
-        val nextIndex = (_currentAudioIndex.value ?: 0) + 1
+    // Làm mới danh sách bài hát
+    fun refreshLocalAudios() {
+        loadLocalAudios()
+    }
+
+    // Triển khai AudioSource
+    override fun getCurrentAudioItem(): AudioItem? {
+        val index = _currentAudioIndex.value ?: -1
+        return if (index >= 0 && index < (_localAudios.value?.size ?: 0)) {
+            _localAudios.value?.get(index)
+        } else null
+    }
+
+    override fun nextAudio() {
+        val currentIndex = _currentAudioIndex.value ?: -1
+        val nextIndex = currentIndex + 1
         if (nextIndex < (_localAudios.value?.size ?: 0)) {
             setCurrentAudioIndex(nextIndex)
         }
     }
-    fun setLocalAudios(audios: List<AudioItem>) {
-        _localAudios.value = audios
-    }
 
-    fun previousAudio() {
-        val prevIndex = (_currentAudioIndex.value ?: 0) - 1
+    override fun previousAudio() {
+        val currentIndex = _currentAudioIndex.value ?: -1
+        val prevIndex = currentIndex - 1
         if (prevIndex >= 0) {
             setCurrentAudioIndex(prevIndex)
         }
     }
-
-    fun getCurrentAudioItem(): AudioItem? {
-        return _localAudios.value?.getOrNull(_currentAudioIndex.value ?: 0)
-    }
-
-
 }

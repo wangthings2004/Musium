@@ -1,77 +1,85 @@
-    package com.jcxdc.musium.ui.viewmodel
+package com.jcxdc.musium.ui.viewmodel
 
-    import androidx.lifecycle.LiveData
-    import androidx.lifecycle.MutableLiveData
-    import androidx.lifecycle.ViewModel
-    import androidx.lifecycle.viewModelScope
-    import com.jcxdc.musium.db.AudioItem
-    import com.jcxdc.musium.model.repository.APIRepository
-    import kotlinx.coroutines.launch
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.jcxdc.musium.db.AudioItem
+import com.jcxdc.musium.model.repository.APIRepository
+import com.jcxdc.musium.service.AudioSource
+import kotlinx.coroutines.launch
 
-    class RemoteAudioViewModel (
-        private val repository: APIRepository,
-    ) : ViewModel() {
-        var isloaded = false
-        private val _isLoading = MutableLiveData<Boolean>()
-        val isLoading: LiveData<Boolean> = _isLoading
+class RemoteAudioViewModel(
+    private val repository: APIRepository
+) : ViewModel(), AudioSource {
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
 
-        private val _remoteAudios = MutableLiveData<List<AudioItem>>()
-        val remoteAudios: LiveData<List<AudioItem>> = _remoteAudios
+    private val _remoteAudios = MutableLiveData<List<AudioItem>>(emptyList())
+    val remoteAudios: LiveData<List<AudioItem>> = _remoteAudios
 
-        private val _currentAudioIndex = MutableLiveData<Int>()
-        val currentAudioIndex: LiveData<Int> = _currentAudioIndex
-        private val _selectedAudio = MutableLiveData<AudioItem?>()
-        val selectedAudio: LiveData<AudioItem?> = _selectedAudio
-        init {
-            if (!isloaded) loadRemoteAudios()
-        }
-        fun selectAudio(index: Int) {
-            _remoteAudios.value = _remoteAudios.value?.mapIndexed { i, audioItem ->
-                audioItem.copy(isSelected = i == index)
-            }
-            setCurrentAudioIndex(index)
-            _selectedAudio.value = _remoteAudios.value?.get(index)
-        }
-        fun deselectCurrentAudio() {
-            _selectedAudio.value?.isSelected = false
-        }
+    private val _currentAudioIndex = MutableLiveData<Int>(-1)
+    val currentAudioIndex: LiveData<Int> = _currentAudioIndex
 
-        private fun loadRemoteAudios() {
-            viewModelScope.launch {
-                _isLoading.value = true
-                val data = repository.getRemoteAudios()
-                _remoteAudios.value = data ?: emptyList()
-                _isLoading.value = false
-                isloaded = true
-            }
-        }
+    private var isLoaded = false
 
-        fun getSelectedAudio(): AudioItem? {
-            return _remoteAudios.value?.find { it.isSelected }
-        }
+    init {
+        if (!isLoaded) loadRemoteAudios()
+    }
 
-        fun setCurrentAudioIndex(index: Int) {
-            _currentAudioIndex.value = index
-            _remoteAudios.value = _remoteAudios.value?.mapIndexed { i, audioItem ->
-                audioItem.copy(isSelected = i == index) // Update isSelected directly
-            }
-        }
+    // Triển khai AudioSource
+    override fun getCurrentAudioItem(): AudioItem? {
+        val index = _currentAudioIndex.value ?: -1
+        return if (index >= 0 && index < (_remoteAudios.value?.size ?: 0)) {
+            _remoteAudios.value?.get(index)
+        } else null
+    }
 
-        fun nextAudio() {
-            val nextIndex = (_currentAudioIndex.value ?: 0) + 1
-            if (nextIndex < (_remoteAudios.value?.size ?: 0)) {
-                setCurrentAudioIndex(nextIndex)
-            }
-        }
-
-        fun previousAudio() {
-            val prevIndex = (_currentAudioIndex.value ?: 0) - 1
-            if (prevIndex >= 0) {
-                setCurrentAudioIndex(prevIndex)
-            }
-        }
-
-        fun getCurrentAudioItem(): AudioItem? {
-            return _remoteAudios.value?.getOrNull(_currentAudioIndex.value!!)
+    override fun nextAudio() {
+        val currentIndex = _currentAudioIndex.value ?: -1
+        val nextIndex = currentIndex + 1
+        if (nextIndex < (_remoteAudios.value?.size ?: 0)) {
+            setCurrentAudioIndex(nextIndex)
         }
     }
+
+    override fun previousAudio() {
+        val currentIndex = _currentAudioIndex.value ?: -1
+        val prevIndex = currentIndex - 1
+        if (prevIndex >= 0) {
+            setCurrentAudioIndex(prevIndex)
+        }
+    }
+
+    // Load dữ liệu từ repository
+    private fun loadRemoteAudios() {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val data = repository.getRemoteAudios() ?: emptyList()
+            _remoteAudios.value = data
+            if (data.isNotEmpty() && _currentAudioIndex.value == -1) {
+                setCurrentAudioIndex(0) // Chọn bài đầu tiên mặc định
+            }
+            _isLoading.value = false
+            isLoaded = true
+        }
+    }
+
+    // Chọn bài hát theo index
+    fun selectAudio(index: Int) {
+        if (index >= 0 && index < (_remoteAudios.value?.size ?: 0)) {
+            setCurrentAudioIndex(index)
+        }
+    }
+
+    // Đặt index hiện tại và cập nhật trạng thái
+    private fun setCurrentAudioIndex(index: Int) {
+        _currentAudioIndex.value = index
+    }
+
+    // Làm mới danh sách nếu cần
+    fun refreshRemoteAudios() {
+        isLoaded = false
+        loadRemoteAudios()
+    }
+}

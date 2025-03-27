@@ -14,17 +14,20 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jcxdc.musium.R
 import com.jcxdc.musium.databinding.FragmentPlaylistSongBinding
+import com.jcxdc.musium.service.MusicService
 import com.jcxdc.musium.ui.screen.BottomViewNavigationListener
+import com.jcxdc.musium.ui.screen.playlist.PlaylistFragmentDirections
 
 import com.jcxdc.musium.ui.viewmodel.LocalAudioViewModel
 import com.jcxdc.musium.ui.viewmodel.SongViewModel
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class PlaylistSongFragment : Fragment(), BottomViewNavigationListener {
 
     private lateinit var binding: FragmentPlaylistSongBinding
     private lateinit var playlistSongAdapter: PlaylistSongAdapter
-    private val localAudioViewModel: LocalAudioViewModel by inject()
+    private val localAudioViewModel: LocalAudioViewModel by sharedViewModel()
     private val songViewModel: SongViewModel by inject()
 
     override fun onCreateView(
@@ -50,12 +53,11 @@ class PlaylistSongFragment : Fragment(), BottomViewNavigationListener {
         playlistSongAdapter = PlaylistSongAdapter().apply {
             onItemClick = { song ->
                 val index = localAudioViewModel.localAudios.value?.indexOf(song) ?: 0
-                localAudioViewModel.setCurrentAudioIndex(index)
+                localAudioViewModel.selectAudio(index)
                 (requireActivity() as? MainActivity)?.let { activity ->
                     val musicService = activity.musicService
                     if (musicService != null) {
-                        musicService.setLocalAudioViewModel(localAudioViewModel)
-                        musicService.playLocalTrack(localAudioViewModel)
+                        musicService.setAudioSource(localAudioViewModel,MusicService.SourceType.LOCAL)
                         activity.showBottomView()
                         activity.updateBottomViewTitle(
                             song.title,
@@ -89,7 +91,7 @@ class PlaylistSongFragment : Fragment(), BottomViewNavigationListener {
     private fun observeViewModel() {
         songViewModel.songs.observe(viewLifecycleOwner) { songs ->
             playlistSongAdapter.submitList(songs)
-            localAudioViewModel.setLocalAudios(songs)
+
         }
         songViewModel.errorMessage.observe(viewLifecycleOwner) { errorMessage ->
             if (!errorMessage.isNullOrEmpty()) {
@@ -101,9 +103,9 @@ class PlaylistSongFragment : Fragment(), BottomViewNavigationListener {
     override fun navigateToPlayer() {
         (requireActivity() as? MainActivity)?.let { activity ->
             val musicService = activity.musicService
-            val isLocal = musicService?.isPlayingLocal() ?: false
-            val action =
-                PlaylistSongFragmentDirections.actionPlaylistSongFragmentToPlayerFragment(isLocal)
+            val sourceType = musicService?.getCurrentSourceType() ?: MusicService.SourceType.NONE
+            val isLocal = sourceType == MusicService.SourceType.LOCAL
+            val action = PlaylistFragmentDirections.actionPlaylistFragmentToPlayerFragment(isLocal)
             findNavController().navigate(action)
         }
 

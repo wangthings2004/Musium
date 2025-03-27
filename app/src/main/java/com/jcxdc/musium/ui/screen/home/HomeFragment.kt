@@ -2,24 +2,22 @@ package com.jcxdc.musium.ui.screen.home
 
 import android.annotation.SuppressLint
 import android.content.Context
-import com.jcxdc.musium.ui.viewmodel.RemoteAudioViewModel
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jcxdc.musium.databinding.FragmentHomeBinding
+import com.jcxdc.musium.service.MusicService
 import com.jcxdc.musium.ui.screen.BottomViewNavigationListener
 import com.jcxdc.musium.ui.screen.MainActivity
+import com.jcxdc.musium.ui.viewmodel.RemoteAudioViewModel
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-
 
 class HomeFragment : Fragment(), BottomViewNavigationListener {
     private lateinit var binding: FragmentHomeBinding
@@ -48,17 +46,13 @@ class HomeFragment : Fragment(), BottomViewNavigationListener {
         setupRecyclerView()
         remoteAudioViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.pbLoading.visibility = if (isLoading) View.VISIBLE else View.GONE
-
         }
         remoteAudioViewModel.remoteAudios.observe(viewLifecycleOwner) { audios ->
             audios?.let {
                 remoteAudioAdapter.submitList(it)
                 topAlbumAdapter.submitLimitedList(it)
-
             }
         }
-//
-
     }
 
     @SuppressLint("DefaultLocale")
@@ -76,13 +70,10 @@ class HomeFragment : Fragment(), BottomViewNavigationListener {
             remoteAudioAdapter.onItemClick = { audioItem ->
                 val index = remoteAudioViewModel.remoteAudios.value?.indexOf(audioItem) ?: 0
                 remoteAudioViewModel.selectAudio(index)
-                remoteAudioViewModel.setCurrentAudioIndex(index)
-
                 (requireActivity() as? MainActivity)?.let { activity ->
                     val musicService = activity.musicService
                     if (musicService != null) {
-                        musicService.setRemoteAudioViewModel(remoteAudioViewModel)
-                        musicService.playTrack(remoteAudioViewModel)
+                        musicService.setAudioSource(remoteAudioViewModel,MusicService.SourceType.REMOTE)
                         activity.showBottomView()
                         activity.updateBottomViewTitle(
                             audioItem.title,
@@ -97,12 +88,11 @@ class HomeFragment : Fragment(), BottomViewNavigationListener {
             adapter = topAlbumAdapter
             topAlbumAdapter.onItemClick = { audioItem ->
                 val index = remoteAudioViewModel.remoteAudios.value?.indexOf(audioItem) ?: 0
-                remoteAudioViewModel.setCurrentAudioIndex(index)
+                remoteAudioViewModel.selectAudio(index)
                 (requireActivity() as? MainActivity)?.let { activity ->
                     val musicService = activity.musicService
                     if (musicService != null) {
-                        musicService.setRemoteAudioViewModel(remoteAudioViewModel)
-                        musicService.playTrack(remoteAudioViewModel)
+                        musicService.setAudioSource(remoteAudioViewModel,MusicService.SourceType.REMOTE)
                         activity.showBottomView()
                         activity.updateBottomViewTitle(
                             audioItem.title,
@@ -112,18 +102,16 @@ class HomeFragment : Fragment(), BottomViewNavigationListener {
                 }
             }
         }
-
-
     }
 
     override fun navigateToPlayer() {
         (requireActivity() as? MainActivity)?.let { activity ->
             val musicService = activity.musicService
-            val isLocal = musicService?.isPlayingLocal() ?: false
-            val action = HomeFragmentDirections.actionHomeFragmentToPlayerFragment(isLocal)
+            val sourceType = musicService?.getCurrentSourceType() ?: MusicService.SourceType.NONE
+            val type = sourceType == MusicService.SourceType.LOCAL
+            val action = HomeFragmentDirections.actionHomeFragmentToPlayerFragment(type)
             findNavController().navigate(action)
         }
-
     }
 
     override fun onAttach(context: Context) {

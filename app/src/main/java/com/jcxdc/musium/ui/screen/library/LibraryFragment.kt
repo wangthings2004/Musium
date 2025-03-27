@@ -14,6 +14,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.jcxdc.musium.databinding.FragmentLibraryBinding
 import com.jcxdc.musium.R
 import com.jcxdc.musium.content_provider.SongDataSource
+import com.jcxdc.musium.service.MusicService
 import com.jcxdc.musium.ui.screen.BottomViewNavigationListener
 import com.jcxdc.musium.ui.screen.MainActivity
 import com.jcxdc.musium.ui.screen.home.HomeFragmentDirections
@@ -74,8 +75,9 @@ class LibraryFragment : Fragment(), BottomViewNavigationListener {
 
         (requireActivity() as? MainActivity)?.let { activity ->
             val musicService = activity.musicService
-            val isLocal = musicService?.isPlayingLocal() ?: false
-            val action = LibraryFragmentDirections.actionLibraryFragmentToPlayerFragment(isLocal)
+            val sourceType = musicService?.getCurrentSourceType() ?: MusicService.SourceType.NONE
+            val type = sourceType == MusicService.SourceType.LOCAL
+            val action = LocalLibraryFragmentDirections.actionLocalLibraryFragmentToPlayerFragment(type)
             findNavController().navigate(action)
         }
     }
