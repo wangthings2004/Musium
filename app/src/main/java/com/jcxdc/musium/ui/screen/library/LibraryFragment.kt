@@ -77,7 +77,7 @@ class LibraryFragment : Fragment(), BottomViewNavigationListener {
             val musicService = activity.musicService
             val sourceType = musicService?.getCurrentSourceType() ?: MusicService.SourceType.NONE
             val type = sourceType == MusicService.SourceType.LOCAL
-            val action = LocalLibraryFragmentDirections.actionLocalLibraryFragmentToPlayerFragment(type)
+            val action = LibraryFragmentDirections.actionLibraryFragmentToPlayerFragment(type)
             findNavController().navigate(action)
         }
     }
