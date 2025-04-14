@@ -14,35 +14,40 @@ import com.jcxdc.musium.ui.viewmodel.PlaylistViewModel
 
 
 import android.app.Dialog
+import android.content.Context
 
 
 import android.util.Log
 
 import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 
 import androidx.recyclerview.widget.RecyclerView
 import com.jcxdc.musium.R
 import com.jcxdc.musium.db.AudioItem
+import com.jcxdc.musium.service.MusicService
+import com.jcxdc.musium.ui.screen.BottomViewNavigationListener
 import com.jcxdc.musium.ui.screen.MainActivity
+import com.jcxdc.musium.ui.screen.home.HomeFragmentDirections
 import com.jcxdc.musium.ui.viewmodel.SongViewModel
-import dagger.hilt.android.AndroidEntryPoint
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
-@AndroidEntryPoint
-class LocalLibraryFragment : Fragment() {
+class LocalLibraryFragment : Fragment(), BottomViewNavigationListener {
     private lateinit var binding: FragmentLocalLibraryBinding
-    private lateinit var localMusicAdapter: LocalMusicAdapter
-    private lateinit var addPlaylistAdapter: AddPlaylistAdapter
-    private val localAudioViewModel: LocalAudioViewModel by viewModels({ requireActivity() })
-    private val playlistViewModel: PlaylistViewModel by viewModels()
-    private val songViewModel: SongViewModel by viewModels()
+    private val localMusicAdapter: LocalMusicAdapter by inject()
+    private val addPlaylistAdapter: AddPlaylistAdapter by inject()
+    private val localAudioViewModel: LocalAudioViewModel by sharedViewModel()
+    private val playlistViewModel: PlaylistViewModel by inject()
+    private val songViewModel: SongViewModel by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentLocalLibraryBinding.inflate(inflater, container, false)
-        addPlaylistAdapter = AddPlaylistAdapter()
+
         setupRecyclerView()
         observeViewModels()
         loadLocalMusic()
@@ -58,8 +63,6 @@ class LocalLibraryFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        localAudioViewModel.loadLocalAudios()
-        localMusicAdapter = LocalMusicAdapter()
         binding.rvLocalLibrary.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = localMusicAdapter
@@ -68,13 +71,12 @@ class LocalLibraryFragment : Fragment() {
             }
             localMusicAdapter.onItemClick = { audioItem ->
                 val index = localAudioViewModel.localAudios.value?.indexOf(audioItem) ?: 0
-                localAudioViewModel.setCurrentAudioIndex(index)
                 localAudioViewModel.selectAudio(index)
                 (requireActivity() as? MainActivity)?.let { activity ->
                     val musicService = activity.musicService
                     if (musicService != null) {
-                        musicService.setLocalAudioViewModel(localAudioViewModel)
-                        musicService.playLocalTrack(localAudioViewModel)
+                        musicService.setAudioSource(localAudioViewModel,MusicService.SourceType.LOCAL)
+
                         activity.showBottomView()
                         activity.updateBottomViewTitle(
                             audioItem.title,
@@ -90,10 +92,7 @@ class LocalLibraryFragment : Fragment() {
             val dialog = Dialog(requireContext())
             val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_add_playlist, null)
             dialog.setContentView(dialogView)
-
             val rvAddPlaylist = dialogView.findViewById<RecyclerView>(R.id.rvAddPlaylist)
-
-
             addPlaylistAdapter.onItemClick = { playlist ->
                 song.playlistId = playlist.id
                 songViewModel.insertSong(song) { success, message ->
@@ -131,6 +130,28 @@ class LocalLibraryFragment : Fragment() {
                 Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    override fun navigateToPlayer() {
+        (requireActivity() as? MainActivity)?.let { activity ->
+            val musicService = activity.musicService
+            val sourceType = musicService?.getCurrentSourceType() ?: MusicService.SourceType.NONE
+            val type = sourceType == MusicService.SourceType.LOCAL
+            val action = LocalLibraryFragmentDirections.actionLocalLibraryFragmentToPlayerFragment(type)
+            findNavController().navigate(action)
+        }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is MainActivity) {
+            context.setBottomViewNavigationListener(this)
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        (requireActivity() as? MainActivity)?.setBottomViewNavigationListener(null)
     }
 
 

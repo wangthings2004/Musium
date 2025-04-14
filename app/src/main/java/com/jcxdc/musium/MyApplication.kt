@@ -1,11 +1,17 @@
 package com.jcxdc.musium
 
 import android.app.Application
+import org.koin.core.context.startKoin
+import org.koin.android.ext.koin.androidContext
+import com.jcxdc.musium.model.di.appModule
 
-import dagger.hilt.android.HiltAndroidApp
+class MyApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
 
-
-@HiltAndroidApp
-class MyApplication :Application() {
-
+        startKoin {
+            androidContext(this@MyApplication)
+            modules(appModule)
+        }
+    }
 }

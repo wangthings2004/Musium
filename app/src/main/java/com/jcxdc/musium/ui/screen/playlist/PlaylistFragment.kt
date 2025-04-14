@@ -19,16 +19,16 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.jcxdc.musium.service.MusicService
 import com.jcxdc.musium.ui.screen.BottomViewNavigationListener
 import com.jcxdc.musium.ui.screen.MainActivity
-import com.jcxdc.musium.ui.screen.home.HomeFragmentDirections
-import dagger.hilt.android.AndroidEntryPoint
+import org.koin.android.ext.android.inject
 
-@AndroidEntryPoint
+
 class PlaylistFragment : Fragment(), BottomViewNavigationListener {
     private lateinit var binding: FragmentPlaylistBinding
-    private val playlistViewModel: PlaylistViewModel by viewModels()
-    private lateinit var playlistAdapter: PlaylistAdapter
+    private val playlistViewModel: PlaylistViewModel by inject()
+    private val playlistAdapter: PlaylistAdapter by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,7 +47,7 @@ class PlaylistFragment : Fragment(), BottomViewNavigationListener {
     }
 
     private fun setupRecyclerView() {
-        playlistAdapter = PlaylistAdapter().apply {
+        playlistAdapter.apply {
             onItemClick = { playlist ->
                 var action = PlaylistFragmentDirections.actionPlaylistFragmentToPlaylistSongFragment(playlist.id)
                 findNavController().navigate(action)
@@ -108,7 +108,8 @@ class PlaylistFragment : Fragment(), BottomViewNavigationListener {
     override fun navigateToPlayer() {
         (requireActivity() as? MainActivity)?.let { activity ->
             val musicService = activity.musicService
-            val isLocal = musicService?.isPlayingLocal() ?: false
+            val sourceType = musicService?.getCurrentSourceType() ?: MusicService.SourceType.NONE
+            val isLocal = sourceType == MusicService.SourceType.LOCAL
             val action = PlaylistFragmentDirections.actionPlaylistFragmentToPlayerFragment(isLocal)
             findNavController().navigate(action)
         }

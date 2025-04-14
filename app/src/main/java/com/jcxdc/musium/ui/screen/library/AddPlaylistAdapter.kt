@@ -1,4 +1,5 @@
 package com.jcxdc.musium.ui.screen.library
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,9 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jcxdc.musium.R
 import com.jcxdc.musium.databinding.ItemAddPlaylistBinding
 import com.jcxdc.musium.db.Playlist
-import javax.inject.Inject
 
-class AddPlaylistAdapter @Inject constructor() :
+
+class AddPlaylistAdapter:
     ListAdapter<Playlist, AddPlaylistAdapter.AddPlaylistViewHolder>(PlaylistDiffCallback) {
 
     var onItemClick: ((Playlist) -> Unit)? = null
@@ -53,8 +54,9 @@ class AddPlaylistAdapter @Inject constructor() :
             true
         }
 
-        // Hiển thị icon trong menu
-        popupMenu.setForceShowIcon(true)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            popupMenu.setForceShowIcon(true)
+        }
         popupMenu.show()
     }
 

@@ -9,9 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jcxdc.musium.R
 import com.jcxdc.musium.databinding.ItemTopTracksBinding
 import com.jcxdc.musium.db.AudioItem
-import javax.inject.Inject
 
-class RemoteAudioAdapter @Inject constructor() :
+
+class RemoteAudioAdapter :
     ListAdapter<AudioItem, RemoteAudioAdapter.RemoteAudioViewHolder>(AudioDiffCallback) {
     var onItemClick: ((AudioItem) -> Unit)? = null
     private val colors = listOf(

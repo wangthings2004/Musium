@@ -14,18 +14,20 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.jcxdc.musium.databinding.FragmentLibraryBinding
 import com.jcxdc.musium.R
 import com.jcxdc.musium.content_provider.SongDataSource
+import com.jcxdc.musium.service.MusicService
 import com.jcxdc.musium.ui.screen.BottomViewNavigationListener
 import com.jcxdc.musium.ui.screen.MainActivity
 import com.jcxdc.musium.ui.screen.home.HomeFragmentDirections
 
 import com.jcxdc.musium.ui.viewmodel.LocalAudioViewModel
+import org.koin.android.ext.android.inject
 
 
 class LibraryFragment : Fragment(), BottomViewNavigationListener {
     lateinit var binding : FragmentLibraryBinding
     lateinit var songDataSource: SongDataSource
     lateinit var localMusicAdapter: LocalMusicAdapter
-    private val localAudioViewModel: LocalAudioViewModel by viewModels({ requireActivity() })
+    private val localAudioViewModel: LocalAudioViewModel by inject()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -73,8 +75,9 @@ class LibraryFragment : Fragment(), BottomViewNavigationListener {
 
         (requireActivity() as? MainActivity)?.let { activity ->
             val musicService = activity.musicService
-            val isLocal = musicService?.isPlayingLocal() ?: false
-            val action = LibraryFragmentDirections.actionLibraryFragmentToPlayerFragment(isLocal)
+            val sourceType = musicService?.getCurrentSourceType() ?: MusicService.SourceType.NONE
+            val type = sourceType == MusicService.SourceType.LOCAL
+            val action = LibraryFragmentDirections.actionLibraryFragmentToPlayerFragment(type)
             findNavController().navigate(action)
         }
     }

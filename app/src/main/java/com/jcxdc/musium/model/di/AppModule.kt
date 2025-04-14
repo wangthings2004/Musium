@@ -10,103 +10,78 @@ import com.jcxdc.musium.db.PlaylistDatabase
 import com.jcxdc.musium.db.SongDao
 import com.jcxdc.musium.db.SongDatabase
 import com.jcxdc.musium.model.api.APIServices
+import com.jcxdc.musium.model.repository.APIRepository
 import com.jcxdc.musium.model.repository.PlaylistRepository
 import com.jcxdc.musium.model.repository.SongRepository
+import com.jcxdc.musium.ui.screen.home.RemoteAudioAdapter
+import com.jcxdc.musium.ui.screen.home.TopAlbumAdapter
+import com.jcxdc.musium.ui.screen.library.AddPlaylistAdapter
+import com.jcxdc.musium.ui.screen.library.LocalMusicAdapter
+import com.jcxdc.musium.ui.screen.playlist.PlaylistAdapter
+import com.jcxdc.musium.ui.viewmodel.LocalAudioViewModel
+import com.jcxdc.musium.ui.viewmodel.PlaylistViewModel
+import com.jcxdc.musium.ui.viewmodel.RemoteAudioViewModel
+import com.jcxdc.musium.ui.viewmodel.SongViewModel
 import com.jcxdc.musium.utils.Constants.BASE_URL
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
+
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Singleton
 
-@Module
-@InstallIn(SingletonComponent::class)
-object AppModule {
-    @Provides
-    @Singleton
-    fun provideContentResolver(@ApplicationContext context: Context): ContentResolver {
-        return context.contentResolver
-    }
-    @Provides
-    @Singleton
-    fun provideSongDataSource(contentResolver: ContentResolver): SongDataSource {
-        return SongDataSource(contentResolver)
-    }
-    @Provides
-    @Singleton
-    fun provideBaseUrl() = BASE_URL
 
-    @Provides
-    @Singleton
-    fun provideGson(): Gson = GsonBuilder().setLenient().create()
+val appModule = module {
 
-    @Provides
-    @Singleton
-    fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
-        return HttpLoggingInterceptor().apply {
+    single { androidContext().contentResolver }
+
+    single { SongDataSource(get()) }
+    single { BASE_URL }
+    single { GsonBuilder().setLenient().create() }
+
+
+    single {
+        HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
     }
 
-    @Provides
-    @Singleton
-    fun provideOkHttpClient(interceptor: HttpLoggingInterceptor): OkHttpClient {
-        return OkHttpClient.Builder()
-            .addInterceptor(interceptor)
+
+    single {
+        OkHttpClient.Builder()
+            .addInterceptor(get<HttpLoggingInterceptor>())
             .build()
     }
 
-    @Provides
-    @Singleton
-    fun provideRetrofit(gson: Gson, okHttpClient: OkHttpClient): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(provideBaseUrl())
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create(gson))
+    single {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(get())
+            .addConverterFactory(GsonConverterFactory.create(get()))
             .build()
     }
 
-    @Provides
-    @Singleton
-    fun provideAPIServices(retrofit: Retrofit): APIServices {
-        return retrofit.create(APIServices::class.java)
-    }
-    @Provides
-    @Singleton
-    fun providePlaylistDatabase(@ApplicationContext context: Context): PlaylistDatabase {
-        return PlaylistDatabase.getInstance(context)
-    }
+    single { get<Retrofit>().create(APIServices::class.java) }
+    single { APIRepository(get()) }
+    single { PlaylistDatabase.getInstance(get()) }
+    single { get<PlaylistDatabase>().playlistDao() }
+    single { PlaylistRepository(get()) }
+    single { SongDatabase.getInstance(get()) }
+    single { get<SongDatabase>().songDao() }
+    single { SongRepository(get()) }
 
-    @Provides
-    fun providePlaylistDao(database: PlaylistDatabase): PlaylistDao {
-        return database.playlistDao()
-    }
-    @Provides
-    @Singleton
-    fun providePlaylistRepository(dao: PlaylistDao): PlaylistRepository {
-        return PlaylistRepository(dao)
-    }
-    @Provides
-    @Singleton
-    fun provideSongDatabase(@ApplicationContext context: Context): SongDatabase {
-        return SongDatabase.getInstance(context)
-    }
+    viewModel { RemoteAudioViewModel(get()) }
+    single { RemoteAudioAdapter() }
+    single { PlaylistAdapter() }
+    single { TopAlbumAdapter() }
 
-    @Provides
-    fun provideSongDao(database: SongDatabase): SongDao {
-        return database.songDao()
-    }
-    @Provides
-    @Singleton
-    fun provideSongRepository(dao: SongDao): SongRepository {
-        return SongRepository(dao)
-    }
+    viewModel { PlaylistViewModel(get()) }
+    viewModel { SongViewModel(get()) }
+    viewModel { LocalAudioViewModel(get()) }
 
-
-
+    single { LocalMusicAdapter() }
+    single { AddPlaylistAdapter() }
 }
+

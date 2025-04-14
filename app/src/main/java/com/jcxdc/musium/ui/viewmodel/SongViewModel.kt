@@ -6,14 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jcxdc.musium.db.AudioItem
 import com.jcxdc.musium.model.repository.SongRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
-@HiltViewModel
-class SongViewModel @Inject constructor(private val repository: SongRepository) : ViewModel() {
+
+class SongViewModel (private val repository: SongRepository) : ViewModel() {
 
     private val _songs = MutableLiveData<List<AudioItem>>()
     val songs: LiveData<List<AudioItem>> get() = _songs
